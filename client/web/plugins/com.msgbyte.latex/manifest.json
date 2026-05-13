@@ -1,0 +1,11 @@
+{
+  "label": "LaTeX Formula",
+  "label.zh-CN": "LaTeX 公式",
+  "name": "com.msgbyte.latex",
+  "url": "/plugins/com.msgbyte.latex/index.js",
+  "version": "0.0.1",
+  "author": "tailchat",
+  "description": "Send LaTeX mathematical formulas in chat with live preview",
+  "description.zh-CN": "在聊天中发送 LaTeX 数学公式，支持实时预览",
+  "requireRestart": false
+}

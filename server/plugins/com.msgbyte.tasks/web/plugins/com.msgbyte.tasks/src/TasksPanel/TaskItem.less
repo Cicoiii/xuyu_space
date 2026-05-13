@@ -1,0 +1,155 @@
+@c-primary: #2563eb;
+@c-primary-light: rgba(37, 99, 235, 0.08);
+@c-text: #0f172a;
+@c-text-secondary: #64748b;
+@c-text-muted: #94a3b8;
+@c-border: #e2e8f0;
+@c-bg: #ffffff;
+@c-bg-hover: #f1f5f9;
+@c-danger: #dc2626;
+
+@c-bg-dark: #1e293b;
+@c-bg-card-dark: #0f172a;
+@c-bg-hover-dark: #334155;
+@c-border-dark: #334155;
+@c-text-dark: #f1f5f9;
+@c-text-secondary-dark: #94a3b8;
+@c-text-muted-dark: #64748b;
+
+@keyframes taskItemIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.plugin-task-item {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  gap: 10px;
+  animation: taskItemIn 0.25s ease-out both;
+  cursor: pointer;
+
+  &:hover {
+    background: @c-bg-hover;
+
+    .plugin-task-item-arrow {
+      opacity: 1;
+    }
+  }
+
+  :global(.dark) & {
+    &:hover {
+      background: @c-bg-hover-dark;
+    }
+  }
+}
+
+.plugin-task-item-priority-bar {
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.plugin-task-item-select {
+  flex-shrink: 0;
+}
+
+.plugin-task-item-check {
+  flex-shrink: 0;
+}
+
+.plugin-task-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.plugin-task-item-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plugin-task-item-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+
+  &.title-done {
+    text-decoration: line-through;
+    color: @c-text-muted;
+
+    :global(.dark) & {
+      color: @c-text-muted-dark;
+    }
+  }
+}
+
+.plugin-task-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+
+.plugin-task-item-priority-tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.plugin-task-item-deadline {
+  font-size: 11px;
+  color: @c-text-muted;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  :global(.dark) & {
+    color: @c-text-muted-dark;
+  }
+
+  &.urgent {
+    color: @c-danger;
+    font-weight: 600;
+  }
+}
+
+
+
+.plugin-task-item-arrow {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.plugin-task-item-done {
+  opacity: 0.5;
+
+  &:hover {
+    background: transparent;
+
+    :global(.dark) & {
+      background: transparent;
+    }
+  }
+
+  .plugin-task-item-arrow {
+    opacity: 0;
+  }
+}

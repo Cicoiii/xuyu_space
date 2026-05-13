@@ -1,0 +1,41 @@
+.modal-anim {
+  &-appear {
+    opacity: 0;
+
+    .modal-inner {
+      margin-top: -16px;
+      opacity: 0;
+    }
+  }
+  &-appear-active,
+  &-appear-done {
+    opacity: 1;
+    transition: opacity 200ms ease-out;
+
+    .modal-inner {
+      transition: margin-top 200ms ease-out, opacity 200ms ease-out;
+      margin-top: 0;
+      opacity: 1;
+    }
+  }
+
+  &-exit {
+    opacity: 1;
+
+    .modal-inner {
+      margin-top: 0;
+      opacity: 1;
+    }
+  }
+  &-exit-active,
+  &-exit-done {
+    opacity: 0;
+    transition: opacity 150ms ease-in;
+
+    .modal-inner {
+      transition: margin-top 150ms ease-in, opacity 150ms ease-in;
+      margin-top: -16px;
+      opacity: 0;
+    }
+  }
+}

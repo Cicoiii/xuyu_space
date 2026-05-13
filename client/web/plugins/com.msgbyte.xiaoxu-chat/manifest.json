@@ -1,0 +1,11 @@
+{
+  "label": "XiaoXu Chat",
+  "label.zh-CN": "小序聊天",
+  "name": "com.msgbyte.xiaoxu-chat",
+  "url": "/plugins/com.msgbyte.xiaoxu-chat/index.js",
+  "version": "0.0.1",
+  "author": "tailchat",
+  "description": "A floating AI chat assistant that can be dragged anywhere on screen",
+  "description.zh-CN": "可拖动的悬浮 AI 聊天助手，随时随地与 AI 对话",
+  "requireRestart": false
+}

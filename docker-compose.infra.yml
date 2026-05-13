@@ -1,0 +1,41 @@
+services:
+  mongo:
+    image: mongo:4
+    restart: on-failure
+    ports:
+      - "27017:27017"
+    volumes:
+      - data:/data/db
+    networks:
+      - infra
+
+  redis:
+    image: redis:alpine
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    networks:
+      - infra
+
+  minio:
+    image: minio/minio
+    restart: on-failure
+    ports:
+      - "19000:9000"
+      - "19001:9001"
+    environment:
+      MINIO_ROOT_USER: tailchat
+      MINIO_ROOT_PASSWORD: com.msgbyte.tailchat
+    volumes:
+      - storage:/data
+    command: minio server /data --console-address ":9001"
+    networks:
+      - infra
+
+networks:
+  infra:
+    name: tailchat-infra
+
+volumes:
+  data:
+  storage:

@@ -1,0 +1,50 @@
+// 群组折叠分组 — 简约风格
+
+@c-text: #64748b;
+@c-text-dark: #64748b;
+@c-border: #e2e8f0;
+@c-border-dark: #334155;
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px 2px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: @c-text;
+  user-select: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #334155;
+
+    :global(.dark) & {
+      color: #94a3b8;
+    }
+  }
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+}
+
+.sectionIcon {
+  margin-right: 2px;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.sectionContent {
+  transition: max-height 0.2s ease;
+  overflow: hidden;
+  padding-left: 8px;
+  margin-left: 6px;
+  border-left: 2px solid @c-border;
+
+  :global(.dark) & {
+    border-left-color: @c-border-dark;
+  }
+}

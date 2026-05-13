@@ -1,0 +1,19 @@
+{
+  "name": "tailchat-plugin-ai-assistant",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "moonrailgun",
+  "description": "AI 智能助手，基于 DeepSeek",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build:web": "ministar buildPlugin all",
+    "build:web:watch": "ministar watchPlugin all"
+  },
+  "dependencies": {
+    "tailchat-server-sdk": "*"
+  },
+  "devDependencies": {
+    "mini-star": "*"
+  }
+}
