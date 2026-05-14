@@ -92,12 +92,61 @@ docker compose down -v
 
 ## 环境变量
 
-本地开发使用 `server/.env`，Docker 全栈使用 `docker-compose.env`，两者区别仅在主机名：
+| 运行方式 | 配置文件 | MongoDB | Redis | MinIO |
+|---------|---------|---------|-------|-------|
+| 本地开发 | `server/.env` | `mongodb://localhost:27017/tailchat` | `redis://localhost:6379` | `127.0.0.1:19000` |
+| Docker 全栈 | `docker-compose.env` | `mongodb://mongo/tailchat` | `redis://redis:6379` | `minio:9000` |
 
-| 变量 | 本地开发 | Docker 全栈 |
-|------|---------|------------|
-| `MONGO_URL` | `mongodb://localhost:27017/tailchat` | `mongodb://mongo/tailchat` |
-| `REDIS_URL` | `redis://localhost:6379/` | `redis://redis:6379` |
-| `MINIO_URL` | `127.0.0.1:19000` | `minio:9000` |
+## 插件管理
 
-必须设置：`SECRET`（JWT 密钥）、`API_URL`（后端地址）、`ADMIN_PASS`（管理员密码）
+### 插件目录结构
+
+- `server/plugins/` - 服务端插件（包含后端服务 + 前端页面）
+- `client/web/plugins/` - 客户端内置插件（纯前端）
+
+### 构建插件前端
+
+服务端插件的前端代码位于 `server/plugins/<插件名>/web/` 下，需要构建后输出到 `server/public/plugins/` 才能被前端加载。
+
+```bash
+# 开发模式下监听并自动构建所有插件（推荐，启动后端时已包含）
+cd server
+pnpm dev:plugins
+
+# 手动构建所有插件
+cd server
+pnpm run --filter "./plugins/*" build:web
+
+# 手动构建单个插件
+cd server/plugins/com.msgbyte.tasks
+pnpm build:web
+```
+
+### 安装插件到后端
+
+将外部插件安装到后端的 `server/plugins/` 目录：
+
+```bash
+cd server
+pnpm plugin:install <插件名>
+```
+
+示例：
+```bash
+# 安装官方插件
+pnpm plugin:install com.msgbyte.tasks com.msgbyte.linkmeta com.msgbyte.github
+
+# 查看已安装的插件列表
+ls plugins/
+```
+
+### 插件注册表
+
+前端通过 `/registry-be.json` 获取后端已安装的插件列表，`{BACKEND}` 会被替换为后端 API 地址。
+
+修改插件后需要重新构建并重启后端：
+```bash
+cd server
+pnpm run --filter "./plugins/*" build:web
+# 重启 dev:server
+```
