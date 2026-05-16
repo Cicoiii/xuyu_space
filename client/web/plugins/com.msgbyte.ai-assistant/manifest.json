@@ -1,0 +1,12 @@
+{
+  "label": "AI Assistant",
+  "label.zh-CN": "小序助手",
+  "name": "com.msgbyte.ai-assistant",
+  "url": "/plugins/com.msgbyte.ai-assistant/index.js",
+  "icon": "/plugins/com.msgbyte.ai-assistant/assets/icon.png",
+  "version": "0.0.0",
+  "author": "moonrailgun",
+  "description": "XiaoXu AI - Intelligent AI assistant for polishing, condensing, expanding, translating, and summarizing text",
+  "description.zh-CN": "小序助手 - AI 智能助手，支持文本润色、精简、扩写、翻译和聊天记录总结",
+  "requireRestart": true
+}

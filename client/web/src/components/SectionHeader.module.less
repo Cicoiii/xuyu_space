@@ -1,0 +1,88 @@
+// SectionHeader — 羀约现代风格
+
+@c-text: #0f172a;
+@c-text-muted: #64748b;
+@c-border: #e2e8f0;
+@c-bg-hover: rgba(0, 0, 0, 0.04);
+
+// 暗色
+@c-text-dark: #f1f5f9;
+@c-text-muted-dark: #64748b;
+@c-border-dark: #1e293b;
+@c-bg-hover-dark: rgba(255, 255, 255, 0.06);
+
+.header {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-bottom: 1px solid @c-border;
+  position: relative;
+
+  :global(.dark) & {
+    border-bottom-color: @c-border-dark;
+  }
+}
+
+.headerContent {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    background: @c-bg-hover;
+
+    :global(.dark) & {
+      background: @c-bg-hover-dark;
+    }
+  }
+}
+
+.headerTitle {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: @c-text;
+  padding: 0 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+}
+
+.headerTitleNoMenu {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: @c-text;
+  padding: 0 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+}
+
+.chevron {
+  font-size: 18px;
+  color: @c-text-muted;
+  transition: transform 0.2s ease;
+  margin-right: 8px;
+  flex-shrink: 0;
+
+  :global(.dark) & {
+    color: @c-text-muted-dark;
+  }
+
+  &.chevronOpen {
+    transform: rotate(180deg);
+  }
+}

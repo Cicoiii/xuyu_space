@@ -1,0 +1,35 @@
+[
+  {
+    "label": "XiaoXu Chat",
+    "label.zh-CN": "小序聊天",
+    "name": "com.msgbyte.xiaoxu-chat",
+    "url": "/plugins/com.msgbyte.xiaoxu-chat/index.js",
+    "version": "0.0.1",
+    "author": "tailchat",
+    "description": "A floating AI chat assistant that can be dragged anywhere on screen",
+    "description.zh-CN": "可拖动的悬浮 AI 聊天助手，随时随地与 AI 对话",
+    "requireRestart": false
+  },
+  {
+    "label": "LaTeX Formula",
+    "label.zh-CN": "LaTeX 公式",
+    "name": "com.msgbyte.latex",
+    "url": "/plugins/com.msgbyte.latex/index.js",
+    "version": "0.0.1",
+    "author": "tailchat",
+    "description": "Send LaTeX mathematical formulas in chat with live preview",
+    "description.zh-CN": "在聊天中发送 LaTeX 数学公式，支持实时预览",
+    "requireRestart": false
+  },
+  {
+    "label": "Task Manage",
+    "label.zh-CN": "任务管理",
+    "name": "com.msgbyte.tasks",
+    "url": "{BACKEND}/plugins/com.msgbyte.tasks/index.js",
+    "version": "0.0.0",
+    "author": "msgbyte",
+    "description": "Task management plugin, add TODO panel in personal panel for personal todo management",
+    "description.zh-CN": "任务管理插件，在个人面板中增加TODO面板，用于个人待办事项的管理",
+    "requireRestart": true
+  }
+]

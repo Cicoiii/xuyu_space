@@ -1,0 +1,337 @@
+// Navbar 简约现代风格
+// 克制、统一、精致
+
+@c-primary: #2563eb;
+@c-primary-hover: #1d4ed8;
+@c-primary-light: rgba(37, 99, 235, 0.08);
+@c-bg: #f8fafc;
+@c-bg-hover: rgba(0, 0, 0, 0.04);
+@c-bg-active: rgba(37, 99, 235, 0.1);
+@c-border: #e2e8f0;
+@c-text: #475569;
+@c-text-muted: #94a3b8;
+@c-divider: #e2e8f0;
+@c-badge-bg: #2563eb;
+@c-badge-muted: #94a3b8;
+@c-green: #22c55e;
+
+// 暗色
+@c-bg-dark: #0f172a;
+@c-bg-hover-dark: rgba(255, 255, 255, 0.06);
+@c-bg-active-dark: rgba(37, 99, 235, 0.15);
+@c-border-dark: #1e293b;
+@c-text-dark: #cbd5e1;
+@c-text-muted-dark: #475569;
+@c-divider-dark: #1e293b;
+@c-badge-muted-dark: #475569;
+
+// 动画 — 极简过渡
+@keyframes navbarFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.navbar {
+  width: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  background: @c-bg;
+  border-right: 1px solid @c-border;
+  position: relative;
+  z-index: 1;
+
+  :global(.dark) & {
+    background: @c-bg-dark;
+    border-right-color: @c-border-dark;
+  }
+}
+
+// 顶部区域
+.navTop {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+// 分隔线
+.divider {
+  width: 28px;
+  height: 1px;
+  background: @c-divider;
+  margin: 6px 0;
+
+  :global(.dark) & {
+    background: @c-divider-dark;
+  }
+}
+
+// 中间可滚动区域 — 使用全局滚动条
+.navMiddle {
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+// 底部区域
+.navBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding-top: 6px;
+}
+
+// ---- NavItem 通用 ----
+.navItemWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 0 12px;
+
+  animation: navbarFadeIn 0.2s ease-out both;
+}
+
+.navItem {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-radius 0.15s ease;
+  overflow: hidden;
+  position: relative;
+
+  &:hover {
+    border-radius: 12px;
+    background: @c-bg-hover;
+
+    :global(.dark) & {
+      background: @c-bg-hover-dark;
+    }
+  }
+
+  // 激活态
+  &.active {
+    border-radius: 12px;
+    background: @c-primary-light;
+
+    :global(.dark) & {
+      background: @c-bg-active-dark;
+    }
+  }
+}
+
+// 左侧激活指示条 — 更克制
+.pill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  border-radius: 0 3px 3px 0;
+  background: transparent;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.pillActive {
+    height: 28px;
+    background: @c-primary;
+
+    :global(.dark) & {
+      background: @c-primary;
+    }
+  }
+
+  &:not(.pillActive) {
+    // hover 时 pill 微微显示
+    .navItemWrapper:hover & {
+      height: 12px;
+      background: @c-text-muted;
+
+      :global(.dark) & {
+        background: @c-text-muted-dark;
+      }
+    }
+  }
+}
+
+// 未读圆点 — 蓝色，头像右上角
+.dot {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: @c-primary;
+  border: 2px solid @c-bg;
+  z-index: 2;
+
+  :global(.dark) & {
+    border-color: @c-bg-dark;
+  }
+}
+
+// 未读数角标 — 更精致
+.badge {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: @c-badge-bg;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  line-height: 1;
+
+  &.badgeMuted {
+    background: @c-badge-muted;
+
+    :global(.dark) & {
+      background: @c-badge-muted-dark;
+    }
+  }
+}
+
+// 图标颜色
+.iconDefault {
+  color: @c-text;
+  font-size: 22px;
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+}
+
+.iconActive {
+  color: @c-primary;
+  font-size: 22px;
+}
+
+// 头像样式 — 更柔和圆角
+.avatarShape {
+  border-radius: 10px;
+  transition: border-radius 0.15s ease;
+
+  &.avatarActive {
+    border-radius: 8px;
+  }
+}
+
+// ---- 底部小图标按钮 ----
+.iconBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  color: @c-text-muted;
+  font-size: 20px;
+
+  &:hover {
+    background: @c-bg-hover;
+    color: @c-text;
+
+    :global(.dark) & {
+      background: @c-bg-hover-dark;
+      color: @c-text-dark;
+    }
+  }
+
+  :global(.dark) & {
+    color: @c-text-muted-dark;
+  }
+}
+
+// 创建群组按钮 — 更克制，弱化视觉权重
+.createGroupBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: transparent;
+  color: @c-text-muted;
+  font-size: 20px;
+  border: 1.5px dashed @c-divider;
+
+  :global(.dark) & {
+    border-color: @c-divider-dark;
+    color: @c-text-muted-dark;
+  }
+
+  &:hover {
+    background: @c-bg-hover;
+    border-color: @c-green;
+    color: @c-green;
+
+    :global(.dark) & {
+      background: @c-bg-hover-dark;
+      border-color: @c-green;
+      color: @c-green;
+    }
+  }
+}
+
+// ---- Tooltip 样式覆盖 ----
+:global {
+  .navbar-tooltip {
+    .ant-tooltip-inner {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+  }
+}
+
+// 响应式
+@media (max-width: 768px) {
+  .navbar {
+    width: 60px;
+    padding: 8px 0;
+  }
+  .navItem {
+    width: 40px;
+    height: 40px;
+  }
+  .iconBtn {
+    width: 36px;
+    height: 36px;
+  }
+  .createGroupBtn {
+    width: 32px;
+    height: 32px;
+  }
+  .navItemWrapper {
+    padding: 0 8px;
+  }
+}

@@ -1,0 +1,43 @@
+import { localTrans } from '@capital/common';
+
+export const Translate = {
+  tasks: localTrans({ 'zh-CN': '任务', 'en-US': 'Tasks' }),
+  tasksService: localTrans({ 'zh-CN': '任务服务', 'en-US': 'Tasks Service' }),
+  insertTip: localTrans({ 'zh-CN': '添加任务', 'en-US': 'Insert Task' }),
+  done: localTrans({ 'zh-CN': '已完成', 'en-US': 'Done' }),
+  undone: localTrans({ 'zh-CN': '未完成', 'en-US': 'Undone' }),
+  emptyTip: localTrans({
+    'zh-CN': '请输入内容',
+    'en-US': 'Please enter content',
+  }),
+  priority: localTrans({ 'zh-CN': '优先级', 'en-US': 'Priority' }),
+  priorityHigh: localTrans({ 'zh-CN': '高', 'en-US': 'High' }),
+  priorityMedium: localTrans({ 'zh-CN': '中', 'en-US': 'Medium' }),
+  priorityLow: localTrans({ 'zh-CN': '低', 'en-US': 'Low' }),
+  deadline: localTrans({ 'zh-CN': '截止日期', 'en-US': 'Deadline' }),
+  desc: localTrans({ 'zh-CN': '详细描述', 'en-US': 'Description' }),
+
+  taskDetail: localTrans({ 'zh-CN': '任务详情', 'en-US': 'Task Detail' }),
+  noDesc: localTrans({ 'zh-CN': '暂无描述', 'en-US': 'No description' }),
+  noDeadline: localTrans({ 'zh-CN': '无截止日期', 'en-US': 'No deadline' }),
+  clearCompleted: localTrans({ 'zh-CN': '清理已完成', 'en-US': 'Clear Completed' }),
+  batchDone: localTrans({ 'zh-CN': '批量完成', 'en-US': 'Batch Done' }),
+  selectAll: localTrans({ 'zh-CN': '全选', 'en-US': 'Select All' }),
+  selected: localTrans({ 'zh-CN': '已选择', 'en-US': 'Selected' }),
+  confirmClear: localTrans({
+    'zh-CN': '确认清理所有已完成的任务？',
+    'en-US': 'Confirm clearing all completed tasks?',
+  }),
+  overdue: localTrans({ 'zh-CN': '已逾期', 'en-US': 'Overdue' }),
+  dueToday: localTrans({ 'zh-CN': '今日截止', 'en-US': 'Due Today' }),
+  daysLeft: localTrans({ 'zh-CN': '天后截止', 'en-US': ' days left' }),
+  createTask: localTrans({ 'zh-CN': '创建任务', 'en-US': 'Create Task' }),
+  cancel: localTrans({ 'zh-CN': '取消', 'en-US': 'Cancel' }),
+  save: localTrans({ 'zh-CN': '保存', 'en-US': 'Save' }),
+  delete: localTrans({ 'zh-CN': '删除', 'en-US': 'Delete' }),
+  edit: localTrans({ 'zh-CN': '编辑', 'en-US': 'Edit' }),
+  titleRequired: localTrans({ 'zh-CN': '标题不能为空', 'en-US': 'Title is required' }),
+  quickAddTip: localTrans({ 'zh-CN': '输入任务后回车创建…', 'en-US': 'Type and press Enter to add…' }),
+  emptyUndone: localTrans({ 'zh-CN': '暂无待办任务', 'en-US': 'No pending tasks' }),
+  emptyDone: localTrans({ 'zh-CN': '暂无已完成任务', 'en-US': 'No completed tasks' }),
+};

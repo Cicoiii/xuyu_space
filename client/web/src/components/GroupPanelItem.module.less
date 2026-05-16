@@ -1,0 +1,77 @@
+// 群组面板项 — 简约现代风格
+
+@c-text: #334155;
+@c-text-dimmed: #94a3b8;
+@c-bg-hover: rgba(0, 0, 0, 0.04);
+@c-bg-active: rgba(37, 99, 235, 0.08);
+@c-text-active: #2563eb;
+
+// 暗色
+@c-text-dark: #e2e8f0;
+@c-text-dimmed-dark: #475569;
+@c-bg-hover-dark: rgba(255, 255, 255, 0.06);
+@c-bg-active-dark: rgba(37, 99, 235, 0.15);
+
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-text;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: @c-bg-hover;
+
+    :global(.dark) & {
+      background: @c-bg-hover-dark;
+    }
+  }
+
+  &.active {
+    background: @c-bg-active;
+    color: @c-text-active;
+
+    :global(.dark) & {
+      background: @c-bg-active-dark;
+      color: #60a5fa;
+    }
+  }
+
+  &.dimmed {
+    color: @c-text-dimmed;
+
+    :global(.dark) & {
+      color: @c-text-dimmed-dark;
+    }
+  }
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+  margin-right: 6px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.badgeArea {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

@@ -1,0 +1,12 @@
+{
+  "label": "Daily Report Agent",
+  "label.zh-CN": "日报生成助手",
+  "name": "com.msgbyte.daily-agent",
+  "url": "{BACKEND}/plugins/com.msgbyte.daily-agent/index.js",
+  "icon": "https://api.iconify.design/mdi/chart-box-outline.svg",
+  "version": "0.0.0",
+  "author": "msgbyte",
+  "description": "Automatically generate daily reports based on chat records",
+  "description.zh-CN": "基于聊天记录自动生成日报",
+  "requireRestart": true
+}

@@ -1,0 +1,545 @@
+// 好友面板样式 - 简洁现代
+
+@c-primary: #2563eb;
+@c-primary-hover: #1d4ed8;
+@c-primary-light: rgba(37, 99, 235, 0.08);
+@c-text: #0f172a;
+@c-text-secondary: #64748b;
+@c-text-muted: #94a3b8;
+@c-border: #e2e8f0;
+@c-bg: #ffffff;
+@c-bg-secondary: #f8fafc;
+@c-bg-hover: #f1f5f9;
+@c-bg-active: #eff6ff;
+@c-success: #16a34a;
+@c-danger: #dc2626;
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// ========== 面板外壳 ==========
+.panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: @c-bg;
+  animation: fadeIn 0.3s ease-out;
+}
+
+// ========== 顶栏 ==========
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 20px;
+  border-bottom: 1px solid @c-border;
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: @c-text;
+  letter-spacing: -0.01em;
+}
+
+// ========== 标签栏 ==========
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 20px;
+  height: 42px;
+  align-items: center;
+  border-bottom: 1px solid @c-border;
+  flex-shrink: 0;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-text-secondary;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: transparent;
+  border: none;
+  white-space: nowrap;
+
+  &:hover {
+    background: @c-bg-hover;
+    color: @c-text;
+  }
+
+  &.active {
+    background: @c-primary-light;
+    color: @c-primary;
+    font-weight: 600;
+  }
+}
+
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: @c-primary;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.tabAdd {
+  color: @c-success;
+
+  &.active {
+    background: rgba(22, 163, 74, 0.08);
+    color: @c-success;
+  }
+}
+
+// ========== 内容区 ==========
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 20px;
+
+  // 自定义滚动条
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+}
+
+// ========== 好友列表 ==========
+.searchBar {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.searchInput {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px 0 36px;
+  background: @c-bg-secondary;
+  border: 1.5px solid @c-border;
+  border-radius: 10px;
+  color: @c-text;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: @c-text-muted;
+  }
+
+  &:focus {
+    border-color: @c-primary;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+    background: #fff;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: @c-text-muted;
+  pointer-events: none;
+}
+
+.friendItem {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  gap: 10px;
+
+  &:hover {
+    background: @c-bg-hover;
+
+    .friendActions {
+      opacity: 1;
+    }
+  }
+}
+
+.friendAvatar {
+  flex-shrink: 0;
+}
+
+.friendInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.friendName {
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friendDiscriminator {
+  font-size: 12px;
+  color: @c-text-muted;
+  margin-left: 2px;
+}
+
+.friendNickname {
+  font-size: 11px;
+  color: @c-primary;
+  margin-left: 6px;
+}
+
+.friendActions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.actionBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: @c-text-secondary;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  padding: 0;
+
+  &:hover {
+    background: @c-bg-secondary;
+    color: @c-primary;
+  }
+
+  &.danger:hover {
+    background: rgba(220, 38, 38, 0.06);
+    color: @c-danger;
+  }
+}
+
+// ========== 空状态 ==========
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  color: @c-text-muted;
+  font-size: 13px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 40px;
+  margin-bottom: 12px;
+  color: #cbd5e1;
+}
+
+.emptyAction {
+  margin-top: 12px;
+  height: 32px;
+  padding: 0 16px;
+  background: @c-primary;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: @c-primary-hover;
+  }
+}
+
+// ========== 添加好友 ==========
+.addSection {
+  padding: 0;
+}
+
+.addHint {
+  font-size: 13px;
+  color: @c-text-secondary;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.addHighlight {
+  color: @c-primary;
+  font-weight: 500;
+}
+
+.addInputRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.addInput {
+  flex: 1;
+  height: 40px;
+  padding: 0 14px;
+  background: @c-bg-secondary;
+  border: 1.5px solid @c-border;
+  border-radius: 10px;
+  color: @c-text;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: @c-text-muted;
+  }
+
+  &:focus {
+    border-color: @c-primary;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+    background: #fff;
+  }
+}
+
+.addBtn {
+  height: 40px;
+  padding: 0 20px;
+  background: @c-primary;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: @c-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.searchResult {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid @c-border;
+  background: @c-bg-secondary;
+}
+
+.resultAvatar {
+  flex-shrink: 0;
+}
+
+.resultInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultName {
+  font-size: 14px;
+  font-weight: 500;
+  color: @c-text;
+}
+
+.resultDiscriminator {
+  font-size: 12px;
+  color: @c-text-muted;
+  margin-left: 2px;
+}
+
+.resultBtn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+
+  &.accept {
+    background: @c-success;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: #15803d;
+    }
+  }
+
+  &.sent {
+    background: @c-bg-secondary;
+    color: @c-text-muted;
+    cursor: default;
+    border: 1px solid @c-border;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// 唯一标识卡片
+.identifyCard {
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid @c-border;
+  background: @c-bg-secondary;
+  text-align: center;
+}
+
+.identifyLabel {
+  font-size: 12px;
+  color: @c-text-muted;
+  margin-bottom: 6px;
+}
+
+.identifyValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: @c-text;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: @c-primary;
+  }
+}
+
+// 请求列表标题
+.requestLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: @c-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+// ========== 暗色模式 ==========
+:global(.dark) {
+  .panel {
+    background: #1e293b;
+  }
+
+  .header {
+    border-bottom-color: #334155;
+  }
+
+  .headerTitle {
+    color: #f1f5f9;
+  }
+
+  .tabs {
+    border-bottom-color: #334155;
+  }
+
+  .tab {
+    color: #94a3b8;
+
+    &:hover {
+      background: #334155;
+      color: #f1f5f9;
+    }
+
+    &.active {
+      background: rgba(37, 99, 235, 0.2);
+      color: #60a5fa;
+    }
+  }
+
+  .content {
+    &::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  }
+
+  .searchInput,
+  .addInput {
+    background: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+
+    &:focus {
+      background: #1e293b;
+      border-color: #60a5fa;
+    }
+  }
+
+  .friendItem {
+    &:hover {
+      background: #334155;
+    }
+  }
+
+  .friendName {
+    color: #f1f5f9;
+  }
+
+  .actionBtn {
+    color: #94a3b8;
+
+    &:hover {
+      background: #475569;
+      color: #60a5fa;
+    }
+  }
+
+  .searchResult,
+  .identifyCard {
+    background: #334155;
+    border-color: #475569;
+  }
+
+  .resultName {
+    color: #f1f5f9;
+  }
+
+  .resultBtn.sent {
+    background: #475569;
+    color: #94a3b8;
+    border-color: #475569;
+  }
+}

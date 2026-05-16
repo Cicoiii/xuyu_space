@@ -1,0 +1,12 @@
+# Windows 环境下的覆盖配置
+# 由于 Windows Docker Desktop 的权限限制，Traefik 无法访问 Docker socket
+# 此配置直接暴露 service-core 端口，绕过 Traefik
+
+services:
+  service-core:
+    ports:
+      - "11000:3000"
+
+  traefik:
+    deploy:
+      replicas: 0

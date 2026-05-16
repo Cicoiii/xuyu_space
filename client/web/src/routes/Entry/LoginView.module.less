@@ -1,0 +1,377 @@
+// 现代分屏登录页样式
+
+// 配色
+@c-primary: #2563eb;
+@c-primary-hover: #1d4ed8;
+@c-bg-input: #f8fafc;
+@c-border: #e2e8f0;
+@c-text: #0f172a;
+@c-text-secondary: #64748b;
+@c-text-muted: #94a3b8;
+@c-error: #dc2626;
+
+// 动画
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideInSlow {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes logoIn {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes inputFocusGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+}
+
+// 主容器
+.loginContainer {
+  width: 100%;
+  max-width: 380px;
+  padding: 0 24px;
+}
+
+// 品牌 - 从右侧滑入 + 缩放旋转
+.brand {
+  margin-bottom: 40px;
+  animation: fadeSlideIn 0.5s ease-out both;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @c-primary;
+  border-radius: 12px;
+  font-size: 22px;
+  color: white;
+  margin-bottom: 20px;
+  animation: logoIn 0.6s ease-out 0.1s both;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  }
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: @c-text;
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  animation: fadeSlideIn 0.5s ease-out 0.15s both;
+}
+
+// 表单 - 依次滑入
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeSlideInSlow 0.6s ease-out 0.2s both;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-text-secondary;
+}
+
+.forgetLink {
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-primary;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    color: @c-primary-hover;
+  }
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: @c-bg-input;
+  border: 1.5px solid @c-border;
+  border-radius: 10px;
+  color: @c-text;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: @c-text-muted;
+  }
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+
+  &:focus {
+    border-color: @c-primary;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    background: #fff;
+  }
+}
+
+// 错误提示
+.error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(220, 38, 38, 0.04);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  border-radius: 8px;
+  color: @c-error;
+  font-size: 13px;
+  animation: fadeSlideIn 0.3s ease-out;
+}
+
+.errorIcon {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+// 提交按钮
+.submitBtn {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, @c-primary 0%, #3b82f6 100%);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  // 按钮光泽扫过动画
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    animation: btnShimmer 3s ease-in-out infinite;
+  }
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, @c-primary-hover 0%, #2563eb 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+    box-shadow: none;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes btnShimmer {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+// 其他方式链接
+.altLinks {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  animation: fadeSlideInSlow 0.6s ease-out 0.35s both;
+}
+
+.altLink {
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-text-secondary;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+
+  &:hover:not(:disabled) {
+    color: @c-primary;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// 插件区域
+.pluginArea {
+  margin-top: 20px;
+  animation: fadeSlideInSlow 0.6s ease-out 0.4s both;
+}
+
+// 底部工具
+.footer {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 48px;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+  animation: fadeSlideInSlow 0.6s ease-out 0.45s both;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.footerBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: @c-bg-input;
+  border: 1px solid @c-border;
+  border-radius: 8px;
+  color: @c-text-secondary;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: @c-primary;
+    color: @c-primary;
+  }
+}
+
+// 共享样式 - 其他视图(注册/游客/忘记密码)使用
+.entryForm {
+  width: 100%;
+  max-width: 380px;
+  padding: 0 24px;
+  animation: fadeSlideIn 0.5s ease-out;
+}
+
+.entryTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: @c-text;
+  margin: 0 0 20px;
+  letter-spacing: -0.02em;
+}
+
+// 响应式
+@media (max-width: 768px) {
+  .loginContainer {
+    max-width: 360px;
+  }
+
+  .entryForm {
+    max-width: 360px;
+  }
+
+  .title,
+  .entryTitle {
+    font-size: 24px;
+  }
+}
+
+// 减少动画偏好
+@media (prefers-reduced-motion: reduce) {
+  .loginContainer,
+  .brand,
+  .logo,
+  .title,
+  .form,
+  .altLinks,
+  .pluginArea,
+  .footer,
+  .entryForm {
+    animation: none !important;
+  }
+
+  .submitBtn::after {
+    animation: none !important;
+  }
+}

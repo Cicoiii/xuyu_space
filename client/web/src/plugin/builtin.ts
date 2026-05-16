@@ -1,0 +1,178 @@
+import type { PluginManifest } from 'tailchat-shared';
+import _compact from 'lodash/compact';
+
+const isOffical = [
+  'nightly.paw.msgbyte.com', //
+  //'localhost:11011'
+].includes(location.host);
+
+/**
+ * 内置插件列表
+ *
+ * 该列表中的插件会被强制安装
+ */
+export const builtinPlugins: PluginManifest[] = _compact([
+  {
+    label: 'Web Panel Plugin',
+    'label.zh-CN': '网页面板插件',
+    name: 'com.msgbyte.webview',
+    url: '/plugins/com.msgbyte.webview/index.js',
+    version: '0.0.0',
+    author: 'msgbyte',
+    description: 'Provides groups with the ability to create web panels',
+    'description.zh-CN': '为群组提供创建网页面板的功能',
+    documentUrl: '/plugins/com.msgbyte.webview/README.md',
+    requireRestart: false,
+  },
+  {
+    label: 'BBCode Mmessage Interpreter',
+    'label.zh-CN': 'BBCode 消息解释器',
+    name: 'com.msgbyte.bbcode',
+    url: '/plugins/com.msgbyte.bbcode/index.js',
+    version: '0.0.0',
+    author: 'msgbyte',
+    description:
+      'A plugin for supporting bbcode syntax to interpret rich text messages',
+    'description.zh-CN': '一个用于支持bbcode语法解释富文本消息的插件',
+    requireRestart: true,
+  },
+  {
+    label: 'Message notification plugin',
+    'label.zh-CN': '消息通知插件',
+    name: 'com.msgbyte.notify',
+    url: '/plugins/com.msgbyte.notify/index.js',
+    version: '0.0.0',
+    author: 'msgbyte',
+    description: 'Ability to add notifications to apps',
+    'description.zh-CN': '为应用增加通知的能力',
+    requireRestart: true,
+  },
+  {
+    label: 'Intro plugin',
+    'label.zh-CN': '初始引导插件',
+    name: 'com.msgbyte.intro',
+    url: '/plugins/com.msgbyte.intro/index.js',
+    version: '0.0.0',
+    author: 'msgbyte',
+    description:
+      'Turn on the ability to introduce the app for the first time for the app',
+    'description.zh-CN': '为应用首次打开介绍应用的能力',
+    requireRestart: true,
+  },
+  {
+    label: 'Markdown Panel',
+    'label.zh-CN': 'Markdown 面板',
+    name: 'com.msgbyte.mdpanel',
+    url: '/plugins/com.msgbyte.mdpanel/index.js',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'Add markdown panel support',
+    'description.zh-CN': '增加 Markdown 面板支持',
+    requireRestart: true,
+  },
+  {
+    label: 'Identity and Access Management',
+    'label.zh-CN': 'IAM 插件',
+    name: 'com.msgbyte.iam',
+    url: '{BACKEND}/plugins/com.msgbyte.iam/index.js',
+    documentUrl:
+      'https://tailchat.msgbyte.com/docs/advanced-usage/plugins/com.msgbyte.iam',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description:
+      'Provide 序语空间 with the function of conveniently accessing external account systems',
+    'description.zh-CN': '为序语空间提供方便的接入外部账户系统的功能',
+    requireRestart: true,
+  },
+  {
+    label: 'Offline Icons',
+    'label.zh-CN': '离线图标',
+    name: 'com.msgbyte.offline-icons',
+    url: '/plugins/com.msgbyte.offline-icons/index.js',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'Add prefetched icons which need run in intranet environment',
+    'description.zh-CN': '增加预获取的图标，适用于内网环境',
+    requireRestart: true,
+  },
+  // isOffical
+  isOffical && {
+    label: 'Posthog',
+    name: 'com.msgbyte.posthog',
+    url: '/plugins/com.msgbyte.posthog/index.js',
+    icon: '/plugins/com.msgbyte.posthog/assets/icon.png',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'Posthog Statistics',
+    'description.zh-CN': 'Posthog 数据统计',
+    requireRestart: true,
+  },
+  isOffical && {
+    label: 'Sentry',
+    name: 'com.msgbyte.sentry',
+    url: '/plugins/com.msgbyte.sentry/index.js',
+    icon: '/plugins/com.msgbyte.sentry/assets/icon.png',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'Sentry error handling',
+    'description.zh-CN': 'Sentry 错误处理',
+    requireRestart: true,
+  },
+  {
+    label: 'User Location',
+    'label.zh-CN': '用户地理位置',
+    name: 'com.msgbyte.user.location',
+    url: '/plugins/com.msgbyte.user.location/index.js',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'Add geographic location records for user information',
+    'description.zh-CN': '为用户信息增加地理位置记录',
+    requireRestart: true,
+  },
+  {
+    label: 'AI Assistant',
+    'label.zh-CN': '小序助手',
+    name: 'com.msgbyte.ai-assistant',
+    url: '/plugins/com.msgbyte.ai-assistant/index.js',
+    icon: '/plugins/com.msgbyte.ai-assistant/assets/icon.png',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'XiaoXu AI - Intelligent AI assistant for polishing, condensing, expanding, translating, and summarizing text',
+    'description.zh-CN': '小序助手 - AI 智能助手，支持文本润色、精简、扩写、翻译和聊天记录总结',
+    requireRestart: true,
+  },
+  {
+    label: 'Drawing plugin',
+    'label.zh-CN': '绘图插件',
+    name: 'com.msgbyte.draw',
+    url: '/plugins/com.msgbyte.draw/index.js',
+    version: '0.0.0',
+    author: 'msgbyte',
+    description: 'Allows sending custom drawings',
+    'description.zh-CN': '允许发送自定义绘图',
+    requireRestart: false,
+  },
+  {
+    label: 'Bigger Font Size',
+    'label.zh-CN': '字号放大',
+    name: 'com.msgbyte.biggerfont',
+    url: '/plugins/com.msgbyte.biggerfont/index.js',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'Add the feature of enlarging the font size to 序语空间, which is convenient for different user',
+    'description.zh-CN': '为序语空间增加放大字号的功能,方便不同用户群体',
+    requireRestart: true,
+  },
+
+  {
+    label: 'Group Welcome',
+    'label.zh-CN': '入群欢迎',
+    name: 'com.msgbyte.welcome',
+    url: '{BACKEND}/plugins/com.msgbyte.welcome/index.js',
+    version: '0.0.0',
+    author: 'moonrailgun',
+    description: 'Send a welcome message when joining a group',
+    'description.zh-CN': '加入群组时发送欢迎消息',
+    requireRestart: true,
+  },
+]);

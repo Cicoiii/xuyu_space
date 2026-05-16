@@ -1,0 +1,538 @@
+// 通用模态框/弹窗样式 - 简洁现代
+// 配色与全局统一
+
+@c-primary: #2563eb;
+@c-primary-hover: #1d4ed8;
+@c-primary-light: rgba(37, 99, 235, 0.08);
+@c-text: #0f172a;
+@c-text-secondary: #64748b;
+@c-text-muted: #94a3b8;
+@c-border: #e2e8f0;
+@c-bg-hover: #f1f5f9;
+@c-bg-active: #eff6ff;
+@c-bg-card: #ffffff;
+@c-green: #22c55e;
+
+// 暗色
+@c-bg-dark: #1e293b;
+@c-bg-card-dark: #0f172a;
+@c-bg-hover-dark: #334155;
+@c-border-dark: #334155;
+@c-text-dark: #f1f5f9;
+@c-text-secondary-dark: #94a3b8;
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// ---- 创建群组 ----
+.createGroupContainer {
+  animation: modalIn 0.25s ease-out;
+}
+
+.stepTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: @c-text;
+  text-align: center;
+  margin-bottom: 4px;
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+}
+
+.stepSubtitle {
+  font-size: 13px;
+  color: @c-text-secondary;
+  text-align: center;
+  margin-bottom: 20px;
+
+  :global(.dark) & {
+    color: @c-text-secondary-dark;
+  }
+}
+
+.templateList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.templateCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1.5px solid @c-border;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: @c-bg-card;
+
+  &:hover {
+    border-color: @c-primary;
+    background: @c-primary-light;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+  }
+
+  :global(.dark) & {
+    background: @c-bg-card-dark;
+    border-color: @c-border-dark;
+
+    &:hover {
+      border-color: @c-primary;
+      background: rgba(37, 99, 235, 0.12);
+    }
+  }
+}
+
+.templateIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.templateIconDefault {
+  background: #eff6ff;
+  color: @c-primary;
+
+  :global(.dark) & {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+  }
+}
+
+.templateIconWork {
+  background: #f0fdf4;
+  color: @c-green;
+
+  :global(.dark) & {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+  }
+}
+
+.templateInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.templateName {
+  font-size: 14px;
+  font-weight: 600;
+  color: @c-text;
+  margin-bottom: 2px;
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+}
+
+.templateDesc {
+  font-size: 12px;
+  color: @c-text-muted;
+
+  :global(.dark) & {
+    color: @c-text-secondary-dark;
+  }
+}
+
+.templateArrow {
+  color: @c-text-muted;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+
+  .templateCard:hover & {
+    transform: translateX(3px);
+    color: @c-primary;
+  }
+}
+
+// 第二步
+.avatarPreview {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.nameLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: @c-text-secondary;
+  margin-bottom: 6px;
+
+  :global(.dark) & {
+    color: @c-text-secondary-dark;
+  }
+}
+
+.nameInput {
+  width: 100%;
+  height: 42px;
+  border: 1.5px solid @c-border;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease;
+  background: @c-bg-card;
+  color: @c-text;
+
+  &::placeholder {
+    color: @c-text-muted;
+  }
+
+  &:focus {
+    border-color: @c-primary;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  :global(.dark) & {
+    background: @c-bg-card-dark;
+    border-color: @c-border-dark;
+    color: @c-text-dark;
+
+    &:focus {
+      border-color: @c-primary;
+    }
+  }
+}
+
+.stepFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid @c-border;
+
+  :global(.dark) & {
+    border-top-color: @c-border-dark;
+  }
+}
+
+.btnBack {
+  font-size: 14px;
+  font-weight: 600;
+  color: @c-text-secondary;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: @c-text;
+    background: @c-bg-hover;
+  }
+
+  :global(.dark) & {
+    color: @c-text-secondary-dark;
+
+    &:hover {
+      color: @c-text-dark;
+      background: @c-bg-hover-dark;
+    }
+  }
+}
+
+.btnCreate {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: @c-primary;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover {
+    background: @c-primary-hover;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ---- 快速搜索 ----
+.quickSwitcherOverlay {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.quickSwitcherPanel {
+  margin-top: 15vh;
+  width: 520px;
+  max-width: 90vw;
+  max-height: 60vh;
+  background: @c-bg-card;
+  border: 1px solid @c-border;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalIn 0.2s ease-out;
+
+  :global(.dark) & {
+    background: @c-bg-card-dark;
+    border-color: @c-border-dark;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.quickSearchHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid @c-border;
+
+  :global(.dark) & {
+    border-bottom-color: @c-border-dark;
+  }
+}
+
+.quickSearchIcon {
+  font-size: 18px;
+  color: @c-text-muted;
+  flex-shrink: 0;
+
+  :global(.dark) & {
+    color: @c-text-secondary-dark;
+  }
+}
+
+.quickSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+  color: @c-text;
+
+  &::placeholder {
+    color: @c-text-muted;
+  }
+
+  :global(.dark) & {
+    color: @c-text-dark;
+
+    &::placeholder {
+      color: @c-text-secondary-dark;
+    }
+  }
+}
+
+.quickSearchKbd {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: @c-bg-hover;
+  color: @c-text-muted;
+  border: 1px solid @c-border;
+  flex-shrink: 0;
+
+  :global(.dark) & {
+    background: @c-bg-hover-dark;
+    color: @c-text-secondary-dark;
+    border-color: @c-border-dark;
+  }
+}
+
+.quickSearchResults {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+
+    :global(.dark) & {
+      background: #475569;
+    }
+  }
+}
+
+.quickSearchItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+
+  &:hover {
+    background: @c-bg-hover;
+
+    :global(.dark) & {
+      background: @c-bg-hover-dark;
+    }
+  }
+}
+
+.quickSearchItemActive {
+  background: @c-bg-active;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+
+  &:hover {
+    background: @c-bg-active;
+  }
+
+  :global(.dark) & {
+    background: rgba(37, 99, 235, 0.15);
+    border-color: rgba(37, 99, 235, 0.3);
+  }
+}
+
+.quickSearchItemIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+  background: @c-bg-hover;
+  color: @c-text-secondary;
+
+  :global(.dark) & {
+    background: @c-bg-hover-dark;
+    color: @c-text-secondary-dark;
+  }
+}
+
+.quickSearchItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.quickSearchItemLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: @c-text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  :global(.dark) & {
+    color: @c-text-dark;
+  }
+}
+
+.quickSearchItemSource {
+  font-size: 11px;
+  color: @c-text-muted;
+  margin-top: 1px;
+
+  :global(.dark) & {
+    color: @c-text-secondary-dark;
+  }
+}
+
+.quickSearchEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  color: @c-text-muted;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.quickSearchEmptyIcon {
+  font-size: 28px;
+  opacity: 0.4;
+}
+
+// ---- 通用模态框升级 ----
+.modalInner {
+  background: @c-bg-card;
+  border: 1px solid @c-border;
+  border-radius: 14px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  :global(.dark) & {
+    background: @c-bg-card-dark;
+    border-color: @c-border-dark;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: @c-text-muted;
+  font-size: 16px;
+  z-index: 10;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: @c-bg-hover;
+    color: @c-text;
+  }
+
+  :global(.dark) & {
+    color: @c-text-secondary-dark;
+
+    &:hover {
+      background: @c-bg-hover-dark;
+      color: @c-text-dark;
+    }
+  }
+}

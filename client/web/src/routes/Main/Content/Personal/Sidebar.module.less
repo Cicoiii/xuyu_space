@@ -1,0 +1,270 @@
+// 个人面板侧边栏样式 - 简洁现代
+
+@c-primary: #2563eb;
+@c-primary-light: rgba(37, 99, 235, 0.08);
+@c-text: #0f172a;
+@c-text-secondary: #64748b;
+@c-text-muted: #94a3b8;
+@c-border: #e2e8f0;
+@c-bg-hover: #f1f5f9;
+@c-bg-active: #eff6ff;
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// 侧边栏外壳
+.sidebarWrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-right: 1px solid @c-border;
+  animation: fadeIn 0.3s ease-out;
+}
+
+// 顶部用户名 header
+.sidebarHeader {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: @c-text;
+  border-bottom: 1px solid @c-border;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+}
+
+// 内容区
+.sidebarContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  min-height: 0;
+
+  // 自定义滚动条
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+}
+
+// 导航项
+.navItem {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  color: @c-text-secondary;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  margin-bottom: 2px;
+  gap: 10px;
+
+  &:hover {
+    background: @c-bg-hover;
+    color: @c-text;
+  }
+
+  &.active {
+    background: @c-bg-active;
+    color: @c-primary;
+    font-weight: 600;
+  }
+}
+
+.navIcon {
+  font-size: 18px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.navLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 徽标
+.navBadge {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+}
+
+// 分区标题
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 10px;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: @c-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &:first-child {
+    margin-top: 4px;
+  }
+}
+
+.sectionAction {
+  font-size: 15px;
+  color: @c-text-muted;
+  cursor: pointer;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: @c-primary;
+  }
+}
+
+// DM 会话项
+.dmItem {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  margin-bottom: 2px;
+  gap: 10px;
+
+  &:hover {
+    background: @c-bg-hover;
+
+    .dmClose {
+      opacity: 1;
+    }
+  }
+
+  &.active {
+    background: @c-bg-active;
+  }
+}
+
+.dmAvatar {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.dmName {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: @c-text-secondary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  .active & {
+    color: @c-primary;
+    font-weight: 600;
+  }
+}
+
+.dmUnread {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: @c-primary;
+  flex-shrink: 0;
+}
+
+.dmClose {
+  font-size: 14px;
+  color: @c-text-muted;
+  opacity: 0;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: #ef4444;
+  }
+}
+
+// 暗色模式适配
+:global(.dark) {
+  .sidebarWrapper {
+    background: #1e293b;
+    border-right-color: #334155;
+  }
+
+  .sidebarHeader {
+    color: #f1f5f9;
+    border-bottom-color: #334155;
+  }
+
+  .navItem {
+    color: #94a3b8;
+
+    &:hover {
+      background: #334155;
+      color: #f1f5f9;
+    }
+
+    &.active {
+      background: rgba(37, 99, 235, 0.2);
+      color: #60a5fa;
+    }
+  }
+
+  .sectionHeader {
+    color: #64748b;
+  }
+
+  .dmName {
+    color: #94a3b8;
+  }
+
+  .dmItem {
+    &:hover {
+      background: #334155;
+    }
+
+    &.active {
+      background: rgba(37, 99, 235, 0.2);
+
+      .dmName {
+        color: #60a5fa;
+      }
+    }
+  }
+
+  .sidebarContent {
+    &::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  }
+}
