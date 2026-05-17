@@ -68,7 +68,7 @@ class PluginManager {
   /**
    * 获取所有插件列表
    */
-  getRegistryPlugins = _once(async (): Promise<PluginManifest[]> => {
+  getRegistryPlugins = async (): Promise<PluginManifest[]> => {
     const plugins = await getCachedRegistryPlugins();
 
     const deduped = _uniqBy(plugins, 'name');
@@ -76,7 +76,7 @@ class PluginManager {
     this.updatePluginsInfo(deduped);
 
     return deduped;
-  });
+  };
 
   /**
    * 自动更新插件信息到最新版本

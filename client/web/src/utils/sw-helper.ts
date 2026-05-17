@@ -1,7 +1,7 @@
 import { notification } from 'antd';
 import React from 'react';
 import _once from 'lodash/once';
-import { showErrorToasts, t } from 'tailchat-shared';
+import { isDevelopment, showErrorToasts, t } from 'tailchat-shared';
 import { UpdateNotificationBtn } from '@/components/UpdateNotificationBtn';
 
 type BeforeInstallPromptEvent = Event & {
@@ -72,6 +72,21 @@ function handleRegistration(registration: ServiceWorkerRegistration) {
  * 初始化ws服务
  */
 export function installServiceWorker() {
+  if (isDevelopment) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        ?.getRegistrations()
+        .then((registrations) =>
+          Promise.all(
+            registrations.map((registration) => registration.unregister())
+          )
+        )
+        .catch(() => {});
+    });
+
+    return;
+  }
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker

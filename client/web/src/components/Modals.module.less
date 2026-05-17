@@ -1,16 +1,16 @@
 // 通用模态框/弹窗样式 - 简洁现代
 // 配色与全局统一
 
-@c-primary: #2563eb;
-@c-primary-hover: #1d4ed8;
-@c-primary-light: rgba(37, 99, 235, 0.08);
-@c-text: #0f172a;
-@c-text-secondary: #64748b;
-@c-text-muted: #94a3b8;
-@c-border: #e2e8f0;
-@c-bg-hover: #f1f5f9;
-@c-bg-active: #eff6ff;
-@c-bg-card: #ffffff;
+@c-primary: var(--tc-primary-color);
+@c-primary-hover: var(--tc-primary-hover-color);
+@c-primary-light: var(--tc-primary-soft-color);
+@c-text: var(--tc-text-color);
+@c-text-secondary: var(--tc-text-secondary-color);
+@c-text-muted: var(--tc-text-muted-color);
+@c-border: var(--tc-border-color);
+@c-bg-hover: var(--tc-surface-soft-color);
+@c-bg-active: var(--tc-primary-surface-color);
+@c-bg-card: var(--tc-surface-panel-color);
 @c-green: #22c55e;
 
 // 暗色
@@ -40,6 +40,7 @@
 // ---- 创建群组 ----
 .createGroupContainer {
   animation: modalIn 0.25s ease-out;
+  color: @c-text;
 }
 
 .stepTitle {
@@ -85,7 +86,7 @@
   &:hover {
     border-color: @c-primary;
     background: @c-primary-light;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+    box-shadow: 0 0 0 3px var(--tc-primary-faint-strong-color);
   }
 
   :global(.dark) & {
@@ -94,7 +95,7 @@
 
     &:hover {
       border-color: @c-primary;
-      background: rgba(37, 99, 235, 0.12);
+      background: var(--tc-primary-focus-color);
     }
   }
 }
@@ -111,12 +112,12 @@
 }
 
 .templateIconDefault {
-  background: #eff6ff;
+  background: var(--tc-primary-surface-color);
   color: @c-primary;
 
   :global(.dark) & {
-    background: rgba(37, 99, 235, 0.15);
-    color: #60a5fa;
+    background: var(--tc-primary-light-strong-color);
+    color: var(--tc-primary-foreground-color);
   }
 }
 
@@ -203,7 +204,7 @@
 
   &:focus {
     border-color: @c-primary;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px var(--tc-primary-light-color);
   }
 
   :global(.dark) & {
@@ -418,15 +419,15 @@
 
 .quickSearchItemActive {
   background: @c-bg-active;
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  border: 1px solid var(--tc-primary-strong-color);
 
   &:hover {
     background: @c-bg-active;
   }
 
   :global(.dark) & {
-    background: rgba(37, 99, 235, 0.15);
-    border-color: rgba(37, 99, 235, 0.3);
+    background: var(--tc-primary-light-strong-color);
+    border-color: var(--tc-primary-shadow-color);
   }
 }
 

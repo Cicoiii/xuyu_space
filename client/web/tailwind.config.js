@@ -196,6 +196,13 @@ module.exports = {
         inherit: {
           DEFAULT: 'inherit',
         },
+        brand: {
+          DEFAULT: 'var(--tc-primary-color)',
+          hover: 'var(--tc-primary-hover-color)',
+          active: 'var(--tc-primary-active-color)',
+          foreground: 'var(--tc-primary-foreground-color)',
+          surface: 'var(--tc-primary-surface-color)',
+        },
         navbar: {
           light: colors.coolGray[300],
           dark: colors.coolGray[900],

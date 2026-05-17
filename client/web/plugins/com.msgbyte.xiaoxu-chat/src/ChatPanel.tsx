@@ -6,8 +6,15 @@ import { T } from './translate';
 
 const pluginRequest = createPluginRequest('com.msgbyte.ai-assistant');
 
-const BLUE = '#2563eb';
-const BLUE_HOVER = '#1d4ed8';
+const BRAND = 'var(--tc-primary-color)';
+const BRAND_HOVER = 'var(--tc-primary-hover-color)';
+const SURFACE = 'var(--tc-surface-panel-color)';
+const SURFACE_SOFT = 'var(--tc-surface-soft-color)';
+const CONTENT_BG = 'var(--tc-content-background-color)';
+const BORDER = 'var(--tc-border-color)';
+const BORDER_SOFT = 'var(--tc-border-soft-color)';
+const TEXT = 'var(--tc-text-color)';
+const TEXT_MUTED = 'var(--tc-text-muted-color)';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -41,8 +48,8 @@ const CopyButton: React.FC<{ text: string }> = React.memo(({ text }) => {
         height: 22,
         borderRadius: 5,
         border: 'none',
-        backgroundColor: copied ? 'rgba(34,197,94,0.12)' : 'rgba(0,0,0,0.04)',
-        color: copied ? '#22c55e' : '#94a3b8',
+        backgroundColor: copied ? 'rgba(34,197,94,0.12)' : SURFACE_SOFT,
+        color: copied ? '#22c55e' : TEXT_MUTED,
         cursor: 'pointer',
         flexShrink: 0,
         transition: 'all 0.15s ease',
@@ -50,14 +57,14 @@ const CopyButton: React.FC<{ text: string }> = React.memo(({ text }) => {
       }}
       onMouseEnter={(e) => {
         if (!copied) {
-          e.currentTarget.style.backgroundColor = 'rgba(37,99,235,0.08)';
-          e.currentTarget.style.color = BLUE;
+          e.currentTarget.style.backgroundColor = 'var(--tc-primary-soft-color)';
+          e.currentTarget.style.color = BRAND;
         }
       }}
       onMouseLeave={(e) => {
         if (!copied) {
-          e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.04)';
-          e.currentTarget.style.color = '#94a3b8';
+          e.currentTarget.style.backgroundColor = SURFACE_SOFT;
+          e.currentTarget.style.color = TEXT_MUTED;
         }
       }}
     >
@@ -125,7 +132,7 @@ export const SidebarIcon: React.FC = React.memo(() => {
           width: 36,
           height: 36,
           borderRadius: 10,
-          backgroundColor: BLUE,
+          backgroundColor: BRAND,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -133,8 +140,8 @@ export const SidebarIcon: React.FC = React.memo(() => {
           cursor: 'pointer',
           transition: 'background-color 0.15s ease',
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = BLUE_HOVER)}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = BLUE)}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = BRAND_HOVER)}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = BRAND)}
       >
         <svg
           width="20"
@@ -297,7 +304,8 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        backgroundColor: '#fff',
+        backgroundColor: SURFACE,
+        color: TEXT,
         animation: 'fadeInScale 0.2s ease',
       }}
     >
@@ -320,7 +328,7 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '12px 16px',
-          backgroundColor: BLUE,
+          backgroundColor: BRAND,
           color: '#fff',
           cursor: 'move',
           flexShrink: 0,
@@ -429,7 +437,7 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
           display: 'flex',
           flexDirection: 'column',
           gap: 10,
-          backgroundColor: '#f8fafc',
+          backgroundColor: CONTENT_BG,
         }}
       >
         {messages.length === 0 && !loading && (
@@ -449,15 +457,15 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
                 width: 48,
                 height: 48,
                 borderRadius: 14,
-                backgroundColor: 'rgba(37,99,235,0.08)',
+                backgroundColor: 'var(--tc-primary-soft-color)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
-              <Icon icon="mdi:creation" style={{ fontSize: 24, color: BLUE }} />
+              <Icon icon="mdi:creation" style={{ fontSize: 24, color: BRAND }} />
             </div>
-            <span style={{ fontSize: 13, color: '#94a3b8' }}>{T.placeholder}</span>
+            <span style={{ fontSize: 13, color: TEXT_MUTED }}>{T.placeholder}</span>
           </div>
         )}
 
@@ -479,8 +487,8 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
                     : '12px 12px 12px 4px',
                 fontSize: 13,
                 lineHeight: 1.6,
-                backgroundColor: msg.role === 'user' ? BLUE : '#fff',
-                color: msg.role === 'user' ? '#fff' : '#334155',
+                backgroundColor: msg.role === 'user' ? BRAND : SURFACE,
+                color: msg.role === 'user' ? '#fff' : TEXT,
                 boxShadow:
                   msg.role === 'assistant' ? '0 1px 3px rgba(0,0,0,0.05)' : 'none',
                 position: 'relative',
@@ -499,7 +507,7 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
                           display: 'inline-block',
                           width: 2,
                           height: 14,
-                          backgroundColor: BLUE,
+                          backgroundColor: BRAND,
                           borderRadius: 1,
                           animation: 'blink 0.8s ease-in-out infinite',
                           flexShrink: 0,
@@ -596,7 +604,7 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
               style={{
                 padding: '10px 14px',
                 borderRadius: '12px 12px 12px 4px',
-                backgroundColor: '#fff',
+                backgroundColor: SURFACE,
                 boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
                 display: 'flex',
                 alignItems: 'center',
@@ -604,7 +612,7 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
               }}
             >
               <LoadingSpinner />
-              <span style={{ fontSize: 12, color: '#94a3b8' }}>{thinkMode ? T.deepThinking : T.thinking}</span>
+              <span style={{ fontSize: 12, color: TEXT_MUTED }}>{thinkMode ? T.deepThinking : T.thinking}</span>
             </div>
           </div>
         )}
@@ -617,9 +625,9 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
           flexDirection: 'column',
           gap: 6,
           padding: '10px 14px 14px',
-          borderTop: '1px solid #f1f5f9',
+          borderTop: `1px solid ${BORDER_SOFT}`,
           flexShrink: 0,
-          backgroundColor: '#fff',
+          backgroundColor: SURFACE,
         }}
       >
         {/* 深度思考模式指示条 */}
@@ -657,18 +665,18 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
             maxHeight: 100,
             resize: 'none',
             borderRadius: 10,
-            border: '1px solid #e2e8f0',
+            border: `1px solid ${BORDER}`,
             padding: '7px 12px',
             fontSize: 13,
             lineHeight: 1.5,
-            color: '#334155',
-            backgroundColor: '#f8fafc',
+            color: TEXT,
+            backgroundColor: SURFACE_SOFT,
             outline: 'none',
             fontFamily: 'inherit',
             transition: 'border-color 0.15s ease',
           }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = BLUE)}
-          onBlur={(e) => (e.currentTarget.style.borderColor = '#e2e8f0')}
+          onFocus={(e) => (e.currentTarget.style.borderColor = BRAND)}
+          onBlur={(e) => (e.currentTarget.style.borderColor = BORDER)}
         />
         <button
           onClick={handleSend}
@@ -678,8 +686,8 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
             height: 36,
             borderRadius: 10,
             border: 'none',
-            backgroundColor: input.trim() && !loading ? BLUE : '#e2e8f0',
-            color: input.trim() && !loading ? '#fff' : '#94a3b8',
+            backgroundColor: input.trim() && !loading ? BRAND : BORDER,
+            color: input.trim() && !loading ? '#fff' : TEXT_MUTED,
             cursor: input.trim() && !loading ? 'pointer' : 'default',
             display: 'flex',
             alignItems: 'center',
@@ -689,11 +697,11 @@ const FloatingWindow: React.FC<{ onClose: () => void }> = React.memo(({ onClose 
           }}
           onMouseEnter={(e) => {
             if (input.trim() && !loading)
-              e.currentTarget.style.backgroundColor = BLUE_HOVER;
+              e.currentTarget.style.backgroundColor = BRAND_HOVER;
           }}
           onMouseLeave={(e) => {
             if (input.trim() && !loading)
-              e.currentTarget.style.backgroundColor = BLUE;
+              e.currentTarget.style.backgroundColor = BRAND;
           }}
         >
           <Icon icon="mdi:send" style={{ fontSize: 18 }} />

@@ -1,13 +1,13 @@
 // 现代分屏登录页样式
 
 // 配色
-@c-primary: #2563eb;
-@c-primary-hover: #1d4ed8;
-@c-bg-input: #f8fafc;
+@c-primary: var(--tc-primary-color);
+@c-primary-hover: var(--tc-primary-hover-color);
+@c-bg-input: var(--tc-surface-soft-color);
 @c-border: #e2e8f0;
-@c-text: #0f172a;
-@c-text-secondary: #64748b;
-@c-text-muted: #94a3b8;
+@c-text: var(--tc-text-color);
+@c-text-secondary: var(--tc-text-secondary-color);
+@c-text-muted: var(--tc-text-muted-color);
 @c-error: #dc2626;
 
 // 动画
@@ -50,10 +50,10 @@
 
 @keyframes inputFocusGlow {
   0%, 100% {
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    box-shadow: 0 0 0 3px var(--tc-primary-soft-color);
   }
   50% {
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 0 0 3px var(--tc-primary-light-strong-color);
   }
 }
 
@@ -82,12 +82,12 @@
   color: white;
   margin-bottom: 20px;
   animation: logoIn 0.6s ease-out 0.1s both;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 12px var(--tc-primary-shadow-color);
   transition: transform 0.3s, box-shadow 0.3s;
 
   &:hover {
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 6px 20px var(--tc-primary-shadow-strong-color);
   }
 }
 
@@ -164,8 +164,23 @@
 
   &:focus {
     border-color: @c-primary;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    background: #fff;
+    box-shadow: 0 0 0 3px var(--tc-primary-light-color);
+    background: var(--tc-surface-color);
+  }
+
+  :global(.dark) & {
+    border-color: #334155;
+    background: var(--tc-surface-panel-color);
+    color: var(--tc-text-color);
+
+    &:hover {
+      border-color: #475569;
+    }
+
+    &:focus {
+      border-color: @c-primary;
+      background: var(--tc-surface-panel-color);
+    }
   }
 }
 
@@ -195,7 +210,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, @c-primary 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, @c-primary 0%, var(--tc-primary-active-color) 100%);
   border: none;
   border-radius: 10px;
   color: white;
@@ -224,9 +239,9 @@
   }
 
   &:hover:not(:disabled) {
-    background: linear-gradient(135deg, @c-primary-hover 0%, #2563eb 100%);
+    background: linear-gradient(135deg, @c-primary-hover 0%, var(--tc-primary-color) 100%);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 4px 16px var(--tc-primary-shadow-strong-color);
   }
 
   &:active:not(:disabled) {
@@ -322,6 +337,17 @@
   &:hover {
     border-color: @c-primary;
     color: @c-primary;
+  }
+
+  :global(.dark) & {
+    background: var(--tc-surface-panel-color);
+    border-color: #334155;
+    color: var(--tc-text-secondary-color);
+
+    &:hover {
+      border-color: @c-primary;
+      color: var(--tc-primary-foreground-color);
+    }
   }
 }
 

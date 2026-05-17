@@ -92,8 +92,12 @@ export const PageContent: React.FC<PropsWithChildren<PageContentProps>> =
     const sidebarEl = _isNil(sidebar) ? null : (
       <div
         className={clsx(
-          'bg-white dark:bg-coolGray-800 flex-shrink-0 transition-width w-60 border-r border-gray-200 dark:border-coolGray-600'
+          'flex-shrink-0 transition-width w-60 border-r'
         )}
+        style={{
+          backgroundColor: 'var(--tc-surface-panel-color)',
+          borderColor: 'var(--tc-border-color)',
+        }}
       >
         {props.sidebar}
       </div>
@@ -121,7 +125,7 @@ export const PageContent: React.FC<PropsWithChildren<PageContentProps>> =
 
         <div
           className={clsx(
-            'flex flex-auto bg-gray-50 dark:bg-coolGray-700 overflow-hidden',
+            'flex flex-auto overflow-hidden',
             isMobile &&
               'transform left-0 w-full h-full absolute transition-transform',
             isMobile && {
@@ -129,6 +133,7 @@ export const PageContent: React.FC<PropsWithChildren<PageContentProps>> =
               'translate-x-0': !showSidebar,
             }
           )}
+          style={{ backgroundColor: 'var(--tc-content-background-color)' }}
           data-tc-role={props['data-tc-role']}
         >
           <div className="tc-content-background" />

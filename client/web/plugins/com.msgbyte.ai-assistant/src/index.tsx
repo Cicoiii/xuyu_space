@@ -1,15 +1,17 @@
 import {
   regChatInputButton,
   regChatInputAction,
+  regCustomPanel,
   Loadable,
   openModal,
   closeModal,
 } from '@capital/common';
 import { BaseChatInputButton } from '@capital/component';
 import React from 'react';
+import { AssistantBubbleIcon } from './FloatingAssistantWindow';
 
 const PLUGIN_ID = 'com.msgbyte.ai-assistant';
-const PLUGIN_NAME = 'AI Assistant';
+const PLUGIN_NAME = '小序助手';
 
 console.log(`Plugin ${PLUGIN_NAME}(${PLUGIN_NAME}) is loaded`);
 
@@ -35,6 +37,16 @@ regChatInputButton({
       />
     );
   },
+});
+
+regCustomPanel({
+  position: 'navbar-group',
+  icon: 'mdi:creation',
+  name: `${PLUGIN_ID}/assistant`,
+  label: '小序助手',
+  render: () => null,
+  renderIcon: AssistantBubbleIcon,
+  onClick: () => {},
 });
 
 regChatInputAction({

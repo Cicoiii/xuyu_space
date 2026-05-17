@@ -30,6 +30,8 @@ export enum CacheKey {
   userSettings = 'userSettings',
 }
 
+export const NON_PERSISTED_CACHE_KEYS = [CacheKey.pluginRegistry] as const;
+
 /**
  * 获取缓存的用户信息
  */
@@ -120,35 +122,42 @@ export async function getCachedAckInfo(converseId: string, refetch = false) {
  * 获取缓存的插件列表
  */
 export async function getCachedRegistryPlugins(): Promise<PluginManifest[]> {
+  queryClient.removeQueries({
+    queryKey: [CacheKey.pluginRegistry],
+    exact: true,
+  });
+
+  const normalizeManifestUrl = (manifest: PluginManifest): PluginManifest => {
+    const normalized = {
+      ...manifest,
+      // 后端url策略。根据前端的url在获取时自动变更为当前链接的后端地址
+      url: parseUrlStr(manifest.url),
+    };
+
+    if (manifest.icon) {
+      normalized.icon = parseUrlStr(manifest.icon);
+    }
+
+    if (manifest.documentUrl) {
+      normalized.documentUrl = parseUrlStr(manifest.documentUrl);
+    }
+
+    return normalized;
+  };
+
   const data = await queryClient.fetchQuery(
     [CacheKey.pluginRegistry],
     () =>
       Promise.all([
         fetchRegistryPlugins().catch(() => []),
         fetchServiceRegistryPlugins()
-          .then((list) =>
-            list.map((manifest) => {
-              const serviceManifest = {
-                ...manifest,
-                // 后端url策略。根据前端的url在获取时自动变更为当前链接的后端地址
-                url: parseUrlStr(manifest.url),
-              };
-
-              if (manifest.icon) {
-                serviceManifest.icon = parseUrlStr(manifest.icon);
-              }
-
-              if (manifest.documentUrl) {
-                serviceManifest.documentUrl = parseUrlStr(manifest.documentUrl);
-              }
-
-              return serviceManifest;
-            })
-          )
+          .then((list) => list.map(normalizeManifestUrl))
           .catch(() => []),
-        fetchLocalStaticRegistryPlugins().catch(() => []),
+        fetchLocalStaticRegistryPlugins()
+          .then((list) => list.map(normalizeManifestUrl))
+          .catch(() => []),
       ]).then(([a, b, c]) => {
-        const all = [...a, ...b, ...c];
+        const all = [...a.map(normalizeManifestUrl), ...b, ...c];
         // 按 name 去重，后出现的覆盖先出现的（本地 registry 优先级高于后端）
         const seen = new Map<string, PluginManifest>();
         for (const p of all) {
@@ -157,7 +166,8 @@ export async function getCachedRegistryPlugins(): Promise<PluginManifest[]> {
         return Array.from(seen.values());
       }),
     {
-      staleTime: 2 * 60 * 60 * 1000, // 缓存2小时
+      cacheTime: 0,
+      staleTime: 0,
     }
   );
 

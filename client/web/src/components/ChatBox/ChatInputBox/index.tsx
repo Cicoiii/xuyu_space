@@ -121,7 +121,13 @@ export const ChatInputBox: React.FC<ChatInputBoxProps> = React.memo((props) => {
       }}
     >
       <div className="px-4 py-2">
-        <div className="bg-white dark:bg-gray-600 flex rounded-md items-center relative">
+        <div
+          className="flex rounded-md items-center relative"
+          style={{
+            backgroundColor: 'var(--tc-surface-panel-color)',
+            color: 'var(--tc-text-color)',
+          }}
+        >
           {/* This w-0 is magic to ensure show mention and long text */}
           <div className="flex-1 w-0">
             <ChatInputBoxInput

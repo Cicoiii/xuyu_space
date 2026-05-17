@@ -2,8 +2,14 @@ import React, { useState, useCallback } from 'react';
 import { localTrans, sharedEvent } from '@capital/common';
 import { Icon } from '@capital/component';
 
-const BLUE = '#2563eb';
-const BLUE_HOVER = '#1d4ed8';
+const BRAND = 'var(--tc-primary-color)';
+const BRAND_HOVER = 'var(--tc-primary-hover-color)';
+const SURFACE = 'var(--tc-surface-panel-color)';
+const SURFACE_SOFT = 'var(--tc-surface-soft-color)';
+const BORDER = 'var(--tc-border-color)';
+const TEXT = 'var(--tc-text-color)';
+const TEXT_SECONDARY = 'var(--tc-text-secondary-color)';
+const TEXT_MUTED = 'var(--tc-text-muted-color)';
 
 const T = {
   sendCode: localTrans({ 'zh-CN': '发送代码', 'en-US': 'Send Code' }),
@@ -61,7 +67,8 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
           display: 'flex',
           flexDirection: 'column',
           gap: 0,
-          background: '#fff',
+          background: SURFACE,
+          color: TEXT,
           borderRadius: 16,
           overflow: 'hidden',
           boxShadow: '0 0 0 1px rgba(0,0,0,0.04), 0 8px 40px rgba(0,0,0,0.08)',
@@ -81,7 +88,7 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
               width: 28,
               height: 28,
               borderRadius: 8,
-              backgroundColor: BLUE,
+              backgroundColor: BRAND,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -93,7 +100,7 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
               style={{ fontSize: 16, color: '#fff' }}
             />
           </div>
-          <span style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>
+          <span style={{ fontSize: 15, fontWeight: 600, color: TEXT }}>
             {mode === 'code' ? T.sendCode : T.sendMarkdown}
           </span>
         </div>
@@ -105,7 +112,7 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
               style={{
                 fontSize: 11,
                 fontWeight: 600,
-                color: '#94a3b8',
+                color: TEXT_MUTED,
                 marginBottom: 6,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
@@ -120,17 +127,17 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
                 width: '100%',
                 height: 36,
                 borderRadius: 8,
-                border: '1px solid #e2e8f0',
+                border: `1px solid ${BORDER}`,
                 padding: '0 10px',
                 fontSize: 13,
-                color: '#334155',
-                backgroundColor: '#f8fafc',
+                color: TEXT,
+                backgroundColor: SURFACE_SOFT,
                 outline: 'none',
                 cursor: 'pointer',
                 transition: 'border-color 0.15s ease',
               }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = BLUE)}
-              onBlur={(e) => (e.currentTarget.style.borderColor = '#e2e8f0')}
+              onFocus={(e) => (e.currentTarget.style.borderColor = BRAND)}
+              onBlur={(e) => (e.currentTarget.style.borderColor = BORDER)}
             >
               {LANGUAGES.map((l) => (
                 <option key={l} value={l}>
@@ -154,12 +161,12 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
               maxHeight: '50vh',
               resize: 'vertical',
               borderRadius: 12,
-              border: '1px solid #e2e8f0',
+              border: `1px solid ${BORDER}`,
               padding: '12px 14px',
               fontSize: 13,
               lineHeight: 1.6,
-              color: '#334155',
-              backgroundColor: '#f8fafc',
+              color: TEXT,
+              backgroundColor: SURFACE_SOFT,
               outline: 'none',
               fontFamily:
                 mode === 'code'
@@ -167,8 +174,8 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
                   : 'inherit',
               transition: 'border-color 0.15s ease',
             }}
-            onFocus={(e) => (e.currentTarget.style.borderColor = BLUE)}
-            onBlur={(e) => (e.currentTarget.style.borderColor = '#e2e8f0')}
+            onFocus={(e) => (e.currentTarget.style.borderColor = BRAND)}
+            onBlur={(e) => (e.currentTarget.style.borderColor = BORDER)}
           />
         </div>
 
@@ -188,14 +195,14 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
               borderRadius: 10,
               fontSize: 13,
               fontWeight: 500,
-              color: '#64748b',
-              backgroundColor: '#f1f5f9',
+              color: TEXT_SECONDARY,
+              backgroundColor: SURFACE_SOFT,
               border: 'none',
               cursor: 'pointer',
               transition: 'background-color 0.15s ease',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e2e8f0')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f1f5f9')}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--tc-border-soft-color)')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = SURFACE_SOFT)}
           >
             {T.cancel}
           </button>
@@ -209,17 +216,17 @@ export const CodeMarkdownPanel: React.FC<CodeMarkdownPanelProps> = React.memo(
               fontSize: 13,
               fontWeight: 500,
               color: '#fff',
-              backgroundColor: BLUE,
+              backgroundColor: BRAND,
               border: 'none',
               cursor: text.trim() ? 'pointer' : 'default',
               opacity: text.trim() ? 1 : 0.5,
               transition: 'all 0.15s ease',
             }}
             onMouseEnter={(e) => {
-              if (text.trim()) e.currentTarget.style.backgroundColor = BLUE_HOVER;
+              if (text.trim()) e.currentTarget.style.backgroundColor = BRAND_HOVER;
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = BLUE;
+              e.currentTarget.style.backgroundColor = BRAND;
             }}
           >
             {T.send}

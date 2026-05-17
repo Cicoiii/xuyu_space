@@ -1,3 +1,5 @@
+@import './tokens.less';
+
 html {
   font-size: 16px;
 }
@@ -7,13 +9,93 @@ body {
   font-size: inherit;
 }
 
+html,
+body,
+#app {
+  --tc-primary-color: @tc-primary;
+  --tc-primary-hover-color: @tc-primary-hover;
+  --tc-primary-active-color: @tc-primary-active;
+  --tc-primary-foreground-color: @tc-primary-foreground;
+  --tc-primary-faint-color: @tc-primary-faint;
+  --tc-primary-faint-strong-color: @tc-primary-faint-strong;
+  --tc-primary-soft-color: @tc-primary-soft;
+  --tc-primary-light-color: @tc-primary-light;
+  --tc-primary-focus-color: @tc-primary-focus;
+  --tc-primary-light-strong-color: @tc-primary-light-strong;
+  --tc-primary-strong-color: @tc-primary-strong;
+  --tc-primary-surface-color: @tc-primary-surface;
+  --tc-primary-shadow-color: @tc-primary-shadow;
+  --tc-primary-shadow-strong-color: @tc-primary-shadow-strong;
+  --tc-dangerous-color: @tc-danger;
+  --tc-dangerous-hover-color: @tc-danger-hover;
+  --tc-success-color: @tc-success;
+  --tc-warning-color: @tc-warning;
+  --tc-surface-color: @tc-surface;
+  --tc-surface-soft-color: @tc-surface-soft;
+  --tc-surface-content-color: @tc-surface-content;
+  --tc-surface-panel-color: @tc-surface;
+  --tc-text-color: @tc-text;
+  --tc-text-secondary-color: @tc-text-secondary;
+  --tc-text-muted-color: @tc-text-muted;
+  --tc-border-color: @tc-border;
+  --tc-border-soft-color: @tc-border-soft;
+  --tc-content-background-color: @tc-surface-content;
+  background: @tc-surface-content;
+}
+
+html.dark,
+body.dark,
+#app.dark {
+  --tc-surface-color: @tc-surface-dark;
+  --tc-surface-soft-color: @tc-bg-panel-dark;
+  --tc-surface-content-color: @tc-surface-content-dark;
+  --tc-surface-panel-color: @tc-surface-panel-dark;
+  --tc-text-color: @tc-text-dark;
+  --tc-text-secondary-color: @tc-text-secondary-dark;
+  --tc-text-muted-color: @tc-text-muted-dark;
+  --tc-border-color: @tc-border-dark;
+  --tc-border-soft-color: @tc-border-soft-dark;
+  --tc-content-background-color: @tc-surface-content-dark;
+  background: @tc-surface-content-dark;
+  color: @tc-text-dark;
+  color-scheme: dark;
+}
+
 #xuyu-app {
   @apply text-typography-light bg-content-light;
+
+  --tc-primary-color: @tc-primary;
+  --tc-primary-hover-color: @tc-primary-hover;
+  --tc-primary-active-color: @tc-primary-active;
+  --tc-primary-foreground-color: @tc-primary-foreground;
+  --tc-primary-faint-color: @tc-primary-faint;
+  --tc-primary-faint-strong-color: @tc-primary-faint-strong;
+  --tc-primary-soft-color: @tc-primary-soft;
+  --tc-primary-light-color: @tc-primary-light;
+  --tc-primary-focus-color: @tc-primary-focus;
+  --tc-primary-light-strong-color: @tc-primary-light-strong;
+  --tc-primary-strong-color: @tc-primary-strong;
+  --tc-primary-surface-color: @tc-primary-surface;
+  --tc-primary-shadow-color: @tc-primary-shadow;
+  --tc-primary-shadow-strong-color: @tc-primary-shadow-strong;
+  --tc-dangerous-color: @tc-danger;
+  --tc-dangerous-hover-color: @tc-danger-hover;
+  --tc-success-color: @tc-success;
+  --tc-warning-color: @tc-warning;
+  --tc-surface-color: @tc-surface;
+  --tc-surface-soft-color: @tc-surface-soft;
+  --tc-surface-content-color: @tc-surface-content;
+  --tc-surface-panel-color: @tc-surface;
+  --tc-text-color: @tc-text;
+  --tc-text-secondary-color: @tc-text-secondary;
+  --tc-text-muted-color: @tc-text-muted;
+  --tc-border-color: @tc-border;
+  --tc-border-soft-color: @tc-border-soft;
 
   --tc-background-image: url(../../assets/images/bg_xuyu.jpg);
   --tc-content-background-image: '';
   --tc-content-background-image-opacity: 0.2;
-  --tc-content-background-color: rgba(243, 244, 246, 1); // copy from bg-content-light
+  --tc-content-background-color: @tc-surface-content; // copy from bg-content-light
 
   .tc-background {
     @apply bg-center bg-cover bg-no-repeat;
@@ -71,7 +153,17 @@ body {
   // 深色模式覆盖
   &.dark {
     @apply text-typography-dark bg-content-dark;
-    --tc-content-background-color: rgba(55, 65, 81, 1);; // copy from bg-content-light
+    --tc-surface-color: @tc-surface-dark;
+    --tc-surface-soft-color: @tc-bg-panel-dark;
+    --tc-surface-content-color: @tc-surface-content-dark;
+    --tc-surface-panel-color: @tc-surface-panel-dark;
+    --tc-text-color: @tc-text-dark;
+    --tc-text-secondary-color: @tc-text-secondary-dark;
+    --tc-text-muted-color: @tc-text-muted-dark;
+    --tc-border-color: @tc-border-dark;
+    --tc-border-soft-color: @tc-border-soft-dark;
+    --tc-content-background-color: @tc-surface-content-dark;
+    color-scheme: dark;
 
     h1,h2,h3,h4,h5,h6 {
       @apply text-typography-dark;
@@ -93,4 +185,9 @@ body {
       background-color: #2f3136;
     }
   }
+}
+
+.dark #xuyu-app {
+  background: @tc-surface-content-dark;
+  color: @tc-text-dark;
 }

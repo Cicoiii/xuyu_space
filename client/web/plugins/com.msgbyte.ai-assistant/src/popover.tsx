@@ -29,9 +29,16 @@ interface AIResult {
   reasoning?: string;
 }
 
-const BLUE = '#2563eb';
-const BLUE_HOVER = '#1d4ed8';
-const BLUE_SUBTLE = 'rgba(37,99,235,0.06)';
+const BRAND = 'var(--tc-primary-color)';
+const BRAND_HOVER = 'var(--tc-primary-hover-color)';
+const BRAND_SUBTLE = 'var(--tc-primary-faint-strong-color)';
+const SURFACE = 'var(--tc-surface-panel-color)';
+const SURFACE_SOFT = 'var(--tc-surface-soft-color)';
+const BORDER = 'var(--tc-border-color)';
+const BORDER_SOFT = 'var(--tc-border-soft-color)';
+const TEXT = 'var(--tc-text-color)';
+const TEXT_SECONDARY = 'var(--tc-text-secondary-color)';
+const TEXT_MUTED = 'var(--tc-text-muted-color)';
 
 const actionItems: { key: ActionType; icon: string }[] = [
   { key: 'summary', icon: 'mdi:text-box-check-outline' },
@@ -142,7 +149,8 @@ export const AssistantPopover: React.FC<{
         maxHeight: '80vh',
         display: 'flex',
         flexDirection: 'column',
-        background: '#fff',
+        background: SURFACE,
+        color: TEXT,
         borderRadius: 16,
         overflow: 'hidden',
         boxShadow: '0 0 0 1px rgba(0,0,0,0.04), 0 8px 40px rgba(0,0,0,0.08)',
@@ -163,7 +171,7 @@ export const AssistantPopover: React.FC<{
             width: 28,
             height: 28,
             borderRadius: 8,
-            backgroundColor: BLUE,
+            backgroundColor: BRAND,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -176,7 +184,7 @@ export const AssistantPopover: React.FC<{
           style={{
             fontSize: 15,
             fontWeight: 600,
-            color: '#0f172a',
+            color: TEXT,
             letterSpacing: '-0.01em',
           }}
         >
@@ -199,26 +207,26 @@ export const AssistantPopover: React.FC<{
             fontSize: 12,
             fontWeight: 500,
             border: thinkMode
-              ? '1px solid rgba(37,99,235,0.4)'
-              : '1px solid #e2e8f0',
-            backgroundColor: thinkMode ? BLUE_SUBTLE : 'transparent',
-            color: thinkMode ? BLUE : '#94a3b8',
+              ? '1px solid var(--tc-primary-shadow-strong-color)'
+              : `1px solid ${BORDER}`,
+            backgroundColor: thinkMode ? BRAND_SUBTLE : 'transparent',
+            color: thinkMode ? BRAND : TEXT_MUTED,
             cursor: 'pointer',
             transition: 'all 0.2s ease',
             whiteSpace: 'nowrap',
           }}
           onMouseEnter={(e) => {
             if (!thinkMode) {
-              e.currentTarget.style.backgroundColor = BLUE_SUBTLE;
-              e.currentTarget.style.borderColor = 'rgba(37,99,235,0.3)';
-              e.currentTarget.style.color = BLUE;
+              e.currentTarget.style.backgroundColor = BRAND_SUBTLE;
+              e.currentTarget.style.borderColor = 'var(--tc-primary-shadow-color)';
+              e.currentTarget.style.color = BRAND;
             }
           }}
           onMouseLeave={(e) => {
             if (!thinkMode) {
               e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.borderColor = '#e2e8f0';
-              e.currentTarget.style.color = '#94a3b8';
+              e.currentTarget.style.borderColor = BORDER;
+              e.currentTarget.style.color = TEXT_MUTED;
             }
           }}
         >
@@ -239,9 +247,9 @@ export const AssistantPopover: React.FC<{
             borderRadius: 8,
             fontSize: 11,
             fontWeight: 500,
-            color: BLUE,
-            backgroundColor: 'rgba(37,99,235,0.04)',
-            border: '1px solid rgba(37,99,235,0.1)',
+            color: BRAND,
+            backgroundColor: 'var(--tc-primary-faint-color)',
+            border: '1px solid var(--tc-primary-light-color)',
             display: 'flex',
             alignItems: 'center',
             gap: 6,
@@ -268,7 +276,7 @@ export const AssistantPopover: React.FC<{
             }}
           >
             <LoadingSpinner />
-            <span style={{ fontSize: 13, color: '#94a3b8' }}>
+            <span style={{ fontSize: 13, color: TEXT_MUTED }}>
               {thinkMode ? Translate.aiDeepThinking : Translate.aiThinking}
             </span>
           </div>
@@ -296,19 +304,19 @@ export const AssistantPopover: React.FC<{
                         borderRadius: 8,
                         fontSize: 12,
                         fontWeight: 500,
-                        color: '#64748b',
-                        backgroundColor: '#f1f5f9',
+                        color: TEXT_SECONDARY,
+                        backgroundColor: SURFACE_SOFT,
                         border: 'none',
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#e2e8f0';
-                        e.currentTarget.style.color = '#334155';
+                        e.currentTarget.style.backgroundColor = BORDER_SOFT;
+                        e.currentTarget.style.color = TEXT;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#f1f5f9';
-                        e.currentTarget.style.color = '#64748b';
+                        e.currentTarget.style.backgroundColor = SURFACE_SOFT;
+                        e.currentTarget.style.color = TEXT_SECONDARY;
                       }}
                     >
                       <Icon
@@ -325,8 +333,8 @@ export const AssistantPopover: React.FC<{
                           padding: '10px 14px',
                           fontSize: 12,
                           lineHeight: 1.7,
-                          color: '#64748b',
-                          backgroundColor: '#fefce8',
+                          color: TEXT_SECONDARY,
+                          backgroundColor: 'var(--tc-warning-soft-color, rgba(234,179,8,0.12))',
                           borderLeft: '3px solid #eab308',
                           borderRadius: '0 8px 8px 0',
                           maxHeight: 200,
@@ -344,8 +352,8 @@ export const AssistantPopover: React.FC<{
                   style={{
                     fontSize: 14,
                     lineHeight: 1.7,
-                    color: '#334155',
-                    backgroundColor: '#f8fafc',
+                    color: TEXT,
+                    backgroundColor: SURFACE_SOFT,
                     borderRadius: 12,
                     padding: '14px 16px',
                   }}
@@ -356,13 +364,13 @@ export const AssistantPopover: React.FC<{
             ) : (
               <div
                 style={{
-                  backgroundColor: '#fef2f2',
+                  backgroundColor: 'var(--tc-dangerous-soft-color, rgba(239,68,68,0.12))',
                   borderRadius: 12,
                   padding: '12px 16px',
                   fontSize: 13,
                 }}
               >
-                <div style={{ color: '#64748b', marginBottom: 4 }}>
+                <div style={{ color: TEXT_SECONDARY, marginBottom: 4 }}>
                   {Translate.serviceBusy}
                 </div>
                 <div style={{ color: '#ef4444' }}>{value.answer}</div>
@@ -391,19 +399,19 @@ export const AssistantPopover: React.FC<{
                 borderRadius: 10,
                 fontSize: 13,
                 fontWeight: 500,
-                color: BLUE,
+                color: BRAND,
                 backgroundColor: 'transparent',
-                border: '1px solid rgba(37,99,235,0.2)',
+                border: '1px solid var(--tc-primary-strong-color)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = BLUE_SUBTLE;
-                e.currentTarget.style.borderColor = BLUE;
+                e.currentTarget.style.backgroundColor = BRAND_SUBTLE;
+                e.currentTarget.style.borderColor = BRAND;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = 'rgba(37,99,235,0.2)';
+                e.currentTarget.style.borderColor = 'var(--tc-primary-strong-color)';
               }}
             >
               {Translate.apply}
@@ -417,16 +425,16 @@ export const AssistantPopover: React.FC<{
                 fontSize: 13,
                 fontWeight: 500,
                 color: '#fff',
-                backgroundColor: BLUE,
+                backgroundColor: BRAND,
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = BLUE_HOVER;
+                e.currentTarget.style.backgroundColor = BRAND_HOVER;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = BLUE;
+                e.currentTarget.style.backgroundColor = BRAND;
               }}
             >
               {Translate.send}
@@ -446,7 +454,7 @@ export const AssistantPopover: React.FC<{
           style={{
             fontSize: 11,
             fontWeight: 600,
-            color: '#94a3b8',
+            color: TEXT_MUTED,
             marginBottom: 10,
             textTransform: 'uppercase',
             letterSpacing: '0.05em',
@@ -477,9 +485,9 @@ export const AssistantPopover: React.FC<{
                   borderRadius: 20,
                   fontSize: 12,
                   fontWeight: 500,
-                  border: disabled ? '1px solid #f1f5f9' : '1px solid #e2e8f0',
-                  backgroundColor: disabled ? '#fafafa' : 'transparent',
-                  color: disabled ? '#cbd5e1' : '#64748b',
+                  border: disabled ? `1px solid ${BORDER_SOFT}` : `1px solid ${BORDER}`,
+                  backgroundColor: disabled ? SURFACE_SOFT : 'transparent',
+                  color: disabled ? TEXT_MUTED : TEXT_SECONDARY,
                   cursor: disabled ? 'default' : 'pointer',
                   transition: 'all 0.15s ease',
                   whiteSpace: 'nowrap',
@@ -488,9 +496,9 @@ export const AssistantPopover: React.FC<{
                   disabled
                     ? undefined
                     : (e) => {
-                        e.currentTarget.style.backgroundColor = BLUE_SUBTLE;
-                        e.currentTarget.style.borderColor = 'rgba(37,99,235,0.3)';
-                        e.currentTarget.style.color = BLUE;
+                        e.currentTarget.style.backgroundColor = BRAND_SUBTLE;
+                        e.currentTarget.style.borderColor = 'var(--tc-primary-shadow-color)';
+                        e.currentTarget.style.color = BRAND;
                       }
                 }
                 onMouseLeave={
@@ -498,8 +506,8 @@ export const AssistantPopover: React.FC<{
                     ? undefined
                     : (e) => {
                         e.currentTarget.style.backgroundColor = 'transparent';
-                        e.currentTarget.style.borderColor = '#e2e8f0';
-                        e.currentTarget.style.color = '#64748b';
+                        e.currentTarget.style.borderColor = BORDER;
+                        e.currentTarget.style.color = TEXT_SECONDARY;
                       }
                 }
               >

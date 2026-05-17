@@ -1,13 +1,13 @@
 // 个人面板侧边栏样式 - 简洁现代
 
-@c-primary: #2563eb;
-@c-primary-light: rgba(37, 99, 235, 0.08);
+@c-primary: var(--tc-primary-color);
+@c-primary-light: var(--tc-primary-soft-color);
 @c-text: #0f172a;
 @c-text-secondary: #64748b;
 @c-text-muted: #94a3b8;
 @c-border: #e2e8f0;
 @c-bg-hover: #f1f5f9;
-@c-bg-active: #eff6ff;
+@c-bg-active: var(--tc-primary-surface-color);
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
@@ -235,8 +235,8 @@
     }
 
     &.active {
-      background: rgba(37, 99, 235, 0.2);
-      color: #60a5fa;
+      background: var(--tc-primary-strong-color);
+      color: var(--tc-primary-foreground-color);
     }
   }
 
@@ -254,10 +254,10 @@
     }
 
     &.active {
-      background: rgba(37, 99, 235, 0.2);
+      background: var(--tc-primary-strong-color);
 
       .dmName {
-        color: #60a5fa;
+        color: var(--tc-primary-foreground-color);
       }
     }
   }

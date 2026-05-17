@@ -3,14 +3,14 @@
 @c-text: #334155;
 @c-text-dimmed: #94a3b8;
 @c-bg-hover: rgba(0, 0, 0, 0.04);
-@c-bg-active: rgba(37, 99, 235, 0.08);
-@c-text-active: #2563eb;
+@c-bg-active: var(--tc-primary-soft-color);
+@c-text-active: var(--tc-primary-color);
 
 // 暗色
 @c-text-dark: #e2e8f0;
 @c-text-dimmed-dark: #475569;
 @c-bg-hover-dark: rgba(255, 255, 255, 0.06);
-@c-bg-active-dark: rgba(37, 99, 235, 0.15);
+@c-bg-active-dark: var(--tc-primary-light-strong-color);
 
 .item {
   display: flex;
@@ -39,7 +39,7 @@
 
     :global(.dark) & {
       background: @c-bg-active-dark;
-      color: #60a5fa;
+      color: var(--tc-primary-foreground-color);
     }
   }
 

@@ -40,11 +40,15 @@ export const FullModal: React.FC<FullModalProps> = React.memo((props) => {
   return (
     <div
       className={clsx(
-        'fixed left-0 right-0 top-0 bottom-0 z-50 bg-white dark:bg-coolGray-800 flex justify-center items-center',
+        'fixed left-0 right-0 top-0 bottom-0 z-50 flex justify-center items-center',
         {
           'opacity-0': !visible,
         }
       )}
+      style={{
+        backgroundColor: 'var(--tc-surface-color)',
+        color: 'var(--tc-text-color)',
+      }}
       ref={ref}
     >
       {props.children}

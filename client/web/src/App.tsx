@@ -98,6 +98,23 @@ AppProvider.displayName = 'AppProvider';
 const AppContainer: React.FC<PropsWithChildren> = React.memo((props) => {
   const { isDarkMode, extraSchemeName } = useColorScheme();
 
+  useEffect(() => {
+    const appRoot = document.querySelector('#app');
+    const roots = [document.documentElement, document.body, appRoot].filter(
+      (el): el is HTMLElement => el instanceof HTMLElement
+    );
+
+    roots.forEach((el) => {
+      el.classList.toggle('dark', isDarkMode);
+    });
+
+    return () => {
+      roots.forEach((el) => {
+        el.classList.remove('dark');
+      });
+    };
+  }, [isDarkMode]);
+
   return (
     <div
       id="xuyu-app"

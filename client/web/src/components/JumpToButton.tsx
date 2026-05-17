@@ -16,9 +16,9 @@ export const JumpToButton: React.FC<Props> = React.memo((props) => {
     <div className="absolute bottom-4 left-0 right-0 text-center">
       <div
         className="shadow-lg px-6 py-2 rounded-full inline-block text-white cursor-pointer"
-        style={{ backgroundColor: '#2563eb', transition: 'background-color 0.15s ease' }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1d4ed8')}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#2563eb')}
+        style={{ backgroundColor: 'var(--tc-primary-color)', transition: 'background-color 0.15s ease' }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--tc-primary-hover-color)')}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--tc-primary-color)')}
         onClick={() => {
           navigate(props.link);
         }}

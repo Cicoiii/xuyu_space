@@ -1,14 +1,14 @@
 // 收件箱页面样式 - 简洁现代
 // 配色与 login/Navbar/Personal 保持一致
 
-@c-primary: #2563eb;
-@c-primary-light: rgba(37, 99, 235, 0.08);
+@c-primary: var(--tc-primary-color);
+@c-primary-light: var(--tc-primary-soft-color);
 @c-text: #0f172a;
 @c-text-secondary: #64748b;
 @c-text-muted: #94a3b8;
 @c-border: #e2e8f0;
 @c-bg-hover: #f1f5f9;
-@c-bg-active: #eff6ff;
+@c-bg-active: var(--tc-primary-surface-color);
 @c-bg-card: #ffffff;
 @c-green: #22c55e;
 @c-red: #ef4444;
@@ -16,7 +16,7 @@
 // 暗色
 @c-bg-dark: #1e293b;
 @c-bg-hover-dark: #334155;
-@c-bg-active-dark: rgba(37, 99, 235, 0.2);
+@c-bg-active-dark: var(--tc-primary-strong-color);
 @c-border-dark: #334155;
 @c-text-dark: #f1f5f9;
 @c-text-secondary-dark: #94a3b8;
@@ -142,7 +142,7 @@
 
     :global(.dark) & {
       background: @c-bg-active-dark;
-      color: #60a5fa;
+      color: var(--tc-primary-foreground-color);
     }
   }
 }
@@ -226,7 +226,7 @@
   background: @c-primary;
 
   :global(.dark) & {
-    background: #60a5fa;
+    background: var(--tc-primary-foreground-color);
   }
 }
 

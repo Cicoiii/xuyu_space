@@ -4,8 +4,8 @@ import 'katex/dist/katex.min.css';
 import { localTrans, sharedEvent } from '@capital/common';
 import { Icon } from '@capital/component';
 
-const BLUE = '#2563eb';
-const BLUE_HOVER = '#1d4ed8';
+const BRAND = 'var(--tc-primary-color)';
+const BRAND_HOVER = 'var(--tc-primary-hover-color)';
 
 const T = {
   title: localTrans({ 'zh-CN': 'LaTeX 公式', 'en-US': 'LaTeX Formula' }),
@@ -81,7 +81,7 @@ export const LatexPanel: React.FC<LatexPanelProps> = React.memo((props) => {
             width: 28,
             height: 28,
             borderRadius: 8,
-            backgroundColor: BLUE,
+            backgroundColor: BRAND,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -119,17 +119,17 @@ export const LatexPanel: React.FC<LatexPanelProps> = React.memo((props) => {
                 borderRadius: 16,
                 fontSize: 12,
                 fontWeight: 500,
-                color: BLUE,
-                backgroundColor: 'rgba(37,99,235,0.08)',
+                color: BRAND,
+                backgroundColor: 'var(--tc-primary-soft-color)',
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'background-color 0.15s ease',
               }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = 'rgba(37,99,235,0.16)')
+                (e.currentTarget.style.backgroundColor = 'var(--tc-primary-light-strong-color)')
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = 'rgba(37,99,235,0.08)')
+                (e.currentTarget.style.backgroundColor = 'var(--tc-primary-soft-color)')
               }
             >
               {ex.label}
@@ -161,7 +161,7 @@ export const LatexPanel: React.FC<LatexPanelProps> = React.memo((props) => {
             outline: 'none',
             transition: 'border-color 0.15s ease',
           }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = BLUE)}
+          onFocus={(e) => (e.currentTarget.style.borderColor = BRAND)}
           onBlur={(e) => (e.currentTarget.style.borderColor = '#e2e8f0')}
         />
       </div>
@@ -241,17 +241,17 @@ export const LatexPanel: React.FC<LatexPanelProps> = React.memo((props) => {
             fontSize: 13,
             fontWeight: 500,
             color: '#fff',
-            backgroundColor: BLUE,
+            backgroundColor: BRAND,
             border: 'none',
             cursor: text.trim() ? 'pointer' : 'default',
             opacity: text.trim() ? 1 : 0.5,
             transition: 'all 0.15s ease',
           }}
           onMouseEnter={(e) => {
-            if (text.trim()) e.currentTarget.style.backgroundColor = BLUE_HOVER;
+            if (text.trim()) e.currentTarget.style.backgroundColor = BRAND_HOVER;
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = BLUE;
+            e.currentTarget.style.backgroundColor = BRAND;
           }}
         >
           {T.send}

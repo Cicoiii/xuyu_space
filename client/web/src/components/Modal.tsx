@@ -96,14 +96,21 @@ export const Modal: React.FC<ModalProps> = React.memo((props) => {
         <ModalContext.Provider value={{ closeModal }}>
           {/* Inner */}
           <div
-            className="modal-inner bg-white dark:bg-coolGray-800 rounded-2xl overflow-auto relative z-10 border border-gray-200 dark:border-coolGray-600 shadow-2xl"
-            style={{ maxHeight: '80vh', maxWidth: '80vw' }}
+            className="modal-inner rounded-2xl overflow-auto relative z-10 border shadow-2xl"
+            style={{
+              maxHeight: '80vh',
+              maxWidth: '80vw',
+              backgroundColor: 'var(--tc-surface-panel-color)',
+              borderColor: 'var(--tc-border-color)',
+              color: 'var(--tc-text-color)',
+            }}
             onClick={stopPropagation}
             data-tc-role="modal"
           >
             {closable === true && (
               <div
-                className="absolute right-2.5 top-2.5 w-7 h-7 rounded-md flex items-center justify-center cursor-pointer text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-coolGray-600 z-10 transition-colors"
+                className="absolute right-2.5 top-2.5 w-7 h-7 rounded-md flex items-center justify-center cursor-pointer z-10 transition-colors"
+                style={{ color: 'var(--tc-text-muted-color)' }}
                 onClick={closeModal}
               >
                 <Icon icon="mdi:close" />
