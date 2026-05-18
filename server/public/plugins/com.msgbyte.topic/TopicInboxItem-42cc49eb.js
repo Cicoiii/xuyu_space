@@ -1,4 +1,4 @@
-definePlugin('@plugins/com.msgbyte.topic/TopicInboxItem-7001b68c.js', ['exports', 'react', './TopicCard-dd8b2221', '@capital/component', './index-2df3cc0c', '@capital/common', 'styled-components'], (function (exports, React, TopicCard, component, index, common, styled) { 'use strict';
+definePlugin('@plugins/com.msgbyte.topic/TopicInboxItem-42cc49eb.js', ['exports', 'react', './TopicCard-b3cc91b1', '@capital/component', './index-f8f06e03', '@capital/common', 'styled-components', 'zustand', 'zustand/middleware/immer'], (function (exports, React, TopicCard, component, index, common, styled, create, immer) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -27,4 +27,4 @@ definePlugin('@plugins/com.msgbyte.topic/TopicInboxItem-7001b68c.js', ['exports'
   exports.TopicInboxItem = TopicInboxItem;
 
 }));
-//# sourceMappingURL=TopicInboxItem-7001b68c.js.map
+//# sourceMappingURL=TopicInboxItem-42cc49eb.js.map

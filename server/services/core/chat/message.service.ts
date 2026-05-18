@@ -215,6 +215,8 @@ class MessageService extends TcService {
           throw new Error(t('您因为被禁言无法发送消息'));
         }
       }
+    } else {
+      await this.checkDMSendPermission(ctx, converseId);
     }
 
     const message = await this.adapter.insert({
@@ -736,14 +738,12 @@ class MessageService extends TcService {
       }
     } else {
       // 是普通会话
-      const converse = await ctx.call<
-        any,
+      const converse = await ctx.call<any, { converseId: string }>(
+        'chat.converse.findConverseInfo',
         {
-          converseId: string;
+          converseId,
         }
-      >('chat.converse.findConverseInfo', {
-        converseId,
-      });
+      );
 
       if (!converse) {
         throw new NotFoundError(t('没有找到会话信息'));
@@ -752,6 +752,47 @@ class MessageService extends TcService {
       if (memebers.findIndex((member) => String(member) === userId) === -1) {
         throw new NoPermissionError(t('没有当前会话权限'));
       }
+    }
+  }
+
+  /**
+   * 微信式联系人删除逻辑:
+   * 一对一私聊必须双方仍互为好友才能继续发送消息，多人会话不受影响。
+   */
+  private async checkDMSendPermission(ctx: TcContext, converseId: string) {
+    const userId = ctx.meta.userId;
+    const t = ctx.meta.t;
+    const converse = await ctx.call<any, { converseId: string }>(
+      'chat.converse.findConverseInfo',
+      {
+        converseId,
+      }
+    );
+
+    if (!converse || converse.type !== 'DM') {
+      return;
+    }
+
+    const members = (converse.members ?? []).map(String);
+    const targetUserId = members.find((memberId) => memberId !== userId);
+
+    if (!targetUserId) {
+      throw new NoPermissionError(t('没有当前会话权限'));
+    }
+
+    const isMutualFriend = await ctx.call<
+      boolean,
+      {
+        user1: string;
+        user2: string;
+      }
+    >('friend.checkMutualFriend', {
+      user1: userId,
+      user2: targetUserId,
+    });
+
+    if (!isMutualFriend) {
+      throw new NoPermissionError(t('对方不是你的好友，无法发送消息'));
     }
   }
 }

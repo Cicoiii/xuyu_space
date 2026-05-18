@@ -31,7 +31,7 @@ async function deployToGithubPages() {
     ghpages.publish(
       deployDir,
       {
-        repo: 'git@github.com:msgbyte/tailchat-archive.git',
+        repo: 'git@github.com:xuyu-space/xuyu-space-desktop.git',
         branch: 'gh-pages',
         dest: './desktop/app',
         push: true,

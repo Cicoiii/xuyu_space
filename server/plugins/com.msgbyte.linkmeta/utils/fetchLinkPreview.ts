@@ -16,7 +16,15 @@ export async function fetchLinkPreview(url: string): Promise<any> {
     return Promise.resolve(cacheRequestList[url]);
   }
 
-  const promise = getLinkPreview(url);
+  const promise = getLinkPreview(url, {
+    followRedirects: 'follow',
+    timeout: 8000,
+    headers: {
+      'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+      'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36',
+    },
+  });
   cacheRequestList[url] = promise;
 
   return Promise.resolve(promise).finally(() => {

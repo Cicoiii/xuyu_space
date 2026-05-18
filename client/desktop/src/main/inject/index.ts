@@ -5,20 +5,19 @@ import { app } from 'electron';
  */
 export function generateInstallPluginScript() {
   /**
-   * manifest copy from:
-   * com.msgbyte.env.rn/manifest.json
+   * Keep the legacy Tailchat plugin protocol name for web client compatibility.
    */
   const inner = `function main() {
     window.tailchat
       .installPlugin({
-        label: 'Electron Support',
-        'label.zh-CN': 'Electron 支持',
+        label: 'Xuyu Space Desktop Support',
+        'label.zh-CN': '序语空间桌面端支持',
         name: 'com.msgbyte.env.electron',
         url: '/plugins/com.msgbyte.env.electron/index.js',
         version: '0.0.0',
         author: 'moonrailgun',
-        description: 'Add support for Electron environment in Tailchat',
-        'description.zh-CN': '在 Tailchat 添加对 Electron 环境的支持',
+        description: 'Add support for the Xuyu Space desktop environment',
+        'description.zh-CN': '为序语空间添加桌面端环境支持',
         requireRestart: true,
       });
   }`;

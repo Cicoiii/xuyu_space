@@ -4,6 +4,7 @@ export type LinkMeta =
       contentType: string;
       favicons: string[];
       mediaType: string;
+      siteName?: string;
       url: string;
       isCache: boolean;
     }

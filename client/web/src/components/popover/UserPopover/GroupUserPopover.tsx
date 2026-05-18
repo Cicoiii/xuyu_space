@@ -15,6 +15,7 @@ import {
   useUserId,
 } from 'tailchat-shared';
 import { UserProfileContainer } from '../../UserProfileContainer';
+import { UserPopoverAddFriendButton } from './UserPopoverAddFriendButton';
 import { usePluginUserExtraInfo } from './usePluginUserExtraInfo';
 
 export const GroupUserPopover: React.FC<{
@@ -84,9 +85,12 @@ export const GroupUserPopover: React.FC<{
         <div className="pt-2">{pluginUserExtraInfoEl}</div>
 
         <div className="text-right">
+          <UserPopoverAddFriendButton userId={userId} />
+
           {allowSendMessage && (
             <Tooltip title={t('发送消息')}>
               <IconBtn
+                className="ml-1"
                 icon="mdi:message-processing-outline"
                 onClick={handleCreateConverse}
               />

@@ -1,11 +1,11 @@
 {
-  "label": "Topic",
-  "label.zh-CN": "群组话题",
+  "label": "Community Topics",
+  "label.zh-CN": "社区话题",
   "name": "com.msgbyte.topic",
   "url": "{BACKEND}/plugins/com.msgbyte.topic/index.js",
   "version": "0.0.0",
   "author": "moonrailgun",
-  "description": "Provide topic feature for groups",
-  "description.zh-CN": "为群组提供话题功能",
+  "description": "Modern community topic feed for groups",
+  "description.zh-CN": "为群组提供现代社区话题流",
   "requireRestart": true
 }

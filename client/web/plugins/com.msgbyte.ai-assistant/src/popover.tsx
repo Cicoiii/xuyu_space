@@ -63,7 +63,6 @@ export const AssistantPopover: React.FC<{
   const { messages } = useConverseMessageContext();
   const { message, setMessage, sendMsg } = useChatInputActionContext();
   const [loading, setLoading] = useState(false);
-  const [thinkMode, setThinkMode] = useState(false);
   const [value, setValue] = useState<AIResult | null>(null);
   const [showReasoning, setShowReasoning] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
@@ -83,7 +82,7 @@ export const AssistantPopover: React.FC<{
         const res = await pluginRequest.post('chat', {
           content,
           action,
-          thinkMode,
+          thinkMode: false,
         });
         setValue(res.data);
       } catch {
@@ -92,7 +91,7 @@ export const AssistantPopover: React.FC<{
         setLoading(false);
       }
     },
-    [thinkMode]
+    []
   );
 
   const handleSummary = useCallback(async () => {
@@ -133,10 +132,6 @@ export const AssistantPopover: React.FC<{
     },
     [sendMsg, props.onCompleted]
   );
-
-  const handleToggleThinkMode = useCallback(() => {
-    setThinkMode((prev) => !prev);
-  }, []);
 
   const hasInput = typeof message === 'string' && message.length > 0;
   const showResult = value !== null && !loading;
@@ -194,71 +189,7 @@ export const AssistantPopover: React.FC<{
         {/* Spacer */}
         <div style={{ flex: 1 }} />
 
-        {/* Think mode toggle */}
-        <button
-          onClick={handleToggleThinkMode}
-          title={Translate.thinkMode}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 5,
-            padding: '4px 10px',
-            borderRadius: 20,
-            fontSize: 12,
-            fontWeight: 500,
-            border: thinkMode
-              ? '1px solid var(--tc-primary-shadow-strong-color)'
-              : `1px solid ${BORDER}`,
-            backgroundColor: thinkMode ? BRAND_SUBTLE : 'transparent',
-            color: thinkMode ? BRAND : TEXT_MUTED,
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            whiteSpace: 'nowrap',
-          }}
-          onMouseEnter={(e) => {
-            if (!thinkMode) {
-              e.currentTarget.style.backgroundColor = BRAND_SUBTLE;
-              e.currentTarget.style.borderColor = 'var(--tc-primary-shadow-color)';
-              e.currentTarget.style.color = BRAND;
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!thinkMode) {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.borderColor = BORDER;
-              e.currentTarget.style.color = TEXT_MUTED;
-            }
-          }}
-        >
-          <Icon
-            icon={thinkMode ? 'mdi:head-lightbulb' : 'mdi:head-lightbulb-outline'}
-            style={{ fontSize: 14 }}
-          />
-          {Translate.thinkMode}
-        </button>
       </div>
-
-      {/* Think mode indicator */}
-      {thinkMode && (
-        <div
-          style={{
-            margin: '0 20px 8px',
-            padding: '6px 12px',
-            borderRadius: 8,
-            fontSize: 11,
-            fontWeight: 500,
-            color: BRAND,
-            backgroundColor: 'var(--tc-primary-faint-color)',
-            border: '1px solid var(--tc-primary-light-color)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-          }}
-        >
-          <Icon icon="mdi:information-outline" style={{ fontSize: 13 }} />
-          深度思考模式已开启，AI 将先进行推理再回答
-        </div>
-      )}
 
       {/* Body */}
       <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
@@ -277,7 +208,7 @@ export const AssistantPopover: React.FC<{
           >
             <LoadingSpinner />
             <span style={{ fontSize: 13, color: TEXT_MUTED }}>
-              {thinkMode ? Translate.aiDeepThinking : Translate.aiThinking}
+              {Translate.aiThinking}
             </span>
           </div>
         ) : value !== null ? (

@@ -27,6 +27,11 @@ export const ForgetPasswordView: React.FC = React.memo(() => {
 
   const [{ loading: sendEmailLoading }, handleSendEmail] =
     useAsyncRequest(async () => {
+      await string()
+        .email(t('邮箱格式不正确'))
+        .required(t('邮箱不能为空'))
+        .validate(email);
+
       await forgetPassword(email);
       setSendedEmail(true);
       showToasts(`已发送邮件到 ${email}`, 'success');
@@ -68,19 +73,61 @@ export const ForgetPasswordView: React.FC = React.memo(() => {
           />
         </div>
 
-        {!sendedEmail && (
-          <PrimaryBtn loading={sendEmailLoading} onClick={handleSendEmail}>
-            {t('向邮箱发送OTP')}
-          </PrimaryBtn>
-        )}
+        <div className={styles.emailTrustPanel}>
+          <div className={styles.emailTrustHeader}>
+            <div className={styles.emailTrustIcon}>
+              <Icon icon="mdi:shield-key-outline" />
+            </div>
+            <div className={styles.emailTrustCopy}>
+              <div className={styles.emailTrustTitle}>
+                {t('安全找回你的公益身份')}
+              </div>
+              <div className={styles.emailTrustDesc}>
+                {t('验证码只用于本次重设密码, 不会改变你的社区资料。')}
+              </div>
+            </div>
+          </div>
+
+          {!sendedEmail ? (
+            <PrimaryBtn
+              className={styles.emailTrustAction}
+              loading={sendEmailLoading}
+              disabled={!email.trim()}
+              onClick={handleSendEmail}
+            >
+              <Icon icon="mdi:send" className="mr-1 inline" />
+              {t('发送找回验证码')}
+            </PrimaryBtn>
+          ) : (
+            <div className={styles.emailSentState}>
+              <Icon icon="mdi:check-circle-outline" />
+              <span>
+                {t('验证码已发送, 请查收邮箱 {{email}}', {
+                  email,
+                })}
+              </span>
+            </div>
+          )}
+        </div>
 
         {sendedEmail && (
           <>
             <div className="mb-4">
-              <div className="mb-2">{t('OTP')}</div>
+              <div className={styles.labelRow}>
+                <div className={styles.label}>{t('OTP')}</div>
+                <button
+                  className={styles.inlineLink}
+                  disabled={sendEmailLoading}
+                  onClick={handleSendEmail}
+                >
+                  {t('重新发送')}
+                </button>
+              </div>
               <EntryInput
                 name="forget-otp"
                 type="text"
+                maxLength={6}
+                placeholder="6位验证码"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
               />

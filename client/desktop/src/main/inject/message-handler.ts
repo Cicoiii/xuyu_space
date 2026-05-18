@@ -3,7 +3,7 @@ import log from 'electron-log';
 import { startScreenshots } from '../screenshots';
 import { BrowserWindow } from 'electron';
 
-export function handleTailchatMessage(
+export function handleXuyuSpaceMessage(
   type: string,
   payload: any,
   webview: Electron.WebContents,

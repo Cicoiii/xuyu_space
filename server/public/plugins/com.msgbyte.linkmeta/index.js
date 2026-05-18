@@ -1564,7 +1564,7 @@ definePlugin('@plugins/com.msgbyte.linkmeta', ['@capital/common', 'react', '@cap
 
   var e=[],t=[];function n(n,r){if(n&&"undefined"!=typeof document){var a,s=!0===r.prepend?"prepend":"append",d=!0===r.singleTag,i="string"==typeof r.container?document.querySelector(r.container):document.getElementsByTagName("head")[0];if(d){var u=e.indexOf(i);-1===u&&(u=e.push(i)-1,t[u]={}),a=t[u]&&t[u][s]?t[u][s]:t[u][s]=c();}else a=c();65279===n.charCodeAt(0)&&(n=n.substring(1)),a.styleSheet?a.styleSheet.cssText+=n:a.appendChild(document.createTextNode(n));}function c(){var e=document.createElement("style");if(e.setAttribute("type","text/css"),r.attributes)for(var t=Object.keys(r.attributes),n=0;n<t.length;n++)e.setAttribute(t[n],r.attributes[t[n]]);var a="prepend"===s?"afterbegin":"beforeend";return i.insertAdjacentElement(a,e),e}}
 
-  var css = ".plugin-linkmeta-previewer {\n  background-color: rgba(0, 0, 0, 0.1);\n  border-radius: 3px;\n  max-width: 90%;\n  overflow: hidden;\n  padding: 10px;\n  width: max-content;\n}\n.plugin-linkmeta-previewer .basic {\n  cursor: pointer;\n  display: flex;\n}\n.plugin-linkmeta-previewer .basic .summary {\n  flex: 1;\n}\n.plugin-linkmeta-previewer .basic .summary:hover .title {\n  text-decoration: underline;\n}\n.plugin-linkmeta-previewer .basic .summary .title {\n  font-weight: bold;\n}\n.plugin-linkmeta-previewer .basic .summary .description {\n  font-size: smaller;\n  color: grey;\n}\n.plugin-linkmeta-previewer .basic .image {\n  margin-left: 16px;\n  margin-top: 8px;\n  max-width: 80px;\n  max-height: 50px;\n  overflow: hidden;\n  display: flex;\n  align-items: center;\n}\n.plugin-linkmeta-previewer .video {\n  max-width: 100%;\n  max-height: 400px;\n  position: relative;\n}\n.plugin-linkmeta-previewer .video .openfull {\n  position: absolute;\n  left: 8px;\n  top: 8px;\n  padding: 4px;\n  border-radius: 3px;\n  background-color: rgba(0, 0, 0, 0.2);\n  color: white;\n  font-size: 20px;\n}\n.plugin-linkmeta-previewer .video .openfull:hover {\n  background-color: rgba(0, 0, 0, 0.4);\n}\n@media screen and (max-width: 719px) {\n  .plugin-linkmeta-previewer .basic {\n    flex-direction: column;\n  }\n  .plugin-linkmeta-previewer .basic .image {\n    max-width: 100%;\n    max-height: initial;\n    margin-left: 0;\n    margin-top: 4px;\n    overflow: initial;\n  }\n  .plugin-linkmeta-previewer .video iframe {\n    max-width: 100%;\n  }\n}\n";
+  var css = ".plugin-linkmeta-previewer {\n  background-color: var(--tc-content-background-color);\n  border: 1px solid rgba(148, 163, 184, 0.28);\n  border-radius: 8px;\n  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);\n  margin-top: 6px;\n  max-width: min(520px, 92%);\n  overflow: hidden;\n  padding: 0;\n  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;\n  width: 100%;\n}\n.plugin-linkmeta-previewer:hover {\n  border-color: rgba(88, 101, 242, 0.38);\n  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);\n  transform: translateY(-1px);\n}\n.plugin-linkmeta-previewer .basic {\n  cursor: pointer;\n  display: flex;\n  min-height: 116px;\n}\n.plugin-linkmeta-previewer .basic .summary {\n  flex: 1;\n  min-width: 0;\n  padding: 12px 14px;\n}\n.plugin-linkmeta-previewer .basic .summary .source,\n.plugin-linkmeta-previewer .basic .summary .url {\n  align-items: center;\n  color: var(--tc-text-secondary-color);\n  display: flex;\n  font-size: 12px;\n  gap: 6px;\n  line-height: 18px;\n  min-width: 0;\n}\n.plugin-linkmeta-previewer .basic .summary .source {\n  margin-bottom: 6px;\n}\n.plugin-linkmeta-previewer .basic .summary .source span {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.plugin-linkmeta-previewer .basic .summary .favicon {\n  border-radius: 4px;\n  flex: 0 0 auto;\n  height: 16px;\n  object-fit: cover;\n  width: 16px;\n}\n.plugin-linkmeta-previewer .basic .summary .title {\n  color: var(--tc-text-color);\n  font-weight: bold;\n  line-height: 20px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  word-break: break-word;\n}\n.plugin-linkmeta-previewer .basic .summary .description {\n  color: var(--tc-text-secondary-color);\n  display: -webkit-box;\n  font-size: 13px;\n  line-height: 19px;\n  margin-top: 6px;\n  overflow: hidden;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  word-break: break-word;\n}\n.plugin-linkmeta-previewer .basic .summary .url {\n  margin-top: 10px;\n}\n.plugin-linkmeta-previewer .basic .summary .url span {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.plugin-linkmeta-previewer .basic .summary .url svg {\n  flex: 0 0 auto;\n}\n.plugin-linkmeta-previewer .basic .image {\n  align-items: stretch;\n  background: rgba(148, 163, 184, 0.12);\n  display: flex;\n  flex: 0 0 148px;\n  max-height: 148px;\n  max-width: 148px;\n  min-height: 116px;\n  overflow: hidden;\n}\n.plugin-linkmeta-previewer .basic .image .ant-image,\n.plugin-linkmeta-previewer .basic .image img {\n  height: 100%;\n  width: 100%;\n}\n.plugin-linkmeta-previewer .basic .image img {\n  object-fit: cover;\n}\n.plugin-linkmeta-previewer .video {\n  border-top: 1px solid rgba(148, 163, 184, 0.2);\n  max-width: 100%;\n  position: relative;\n}\n.plugin-linkmeta-previewer .video .openfull {\n  position: absolute;\n  left: 8px;\n  top: 8px;\n  padding: 4px;\n  border-radius: 3px;\n  background-color: rgba(0, 0, 0, 0.2);\n  color: white;\n  font-size: 20px;\n}\n.plugin-linkmeta-previewer .video .openfull:hover {\n  background-color: rgba(0, 0, 0, 0.4);\n}\n.plugin-linkmeta-previewer .video iframe {\n  aspect-ratio: 16 / 9;\n  border: 0;\n  display: block;\n  width: 100%;\n}\n.plugin-linkmeta-previewer .video video {\n  display: block;\n  max-height: 420px;\n  width: 100%;\n}\n.plugin-linkmeta-previewer audio {\n  display: block;\n  min-width: 280px;\n  padding: 12px;\n  width: 100%;\n}\n@media screen and (max-width: 719px) {\n  .plugin-linkmeta-previewer .basic {\n    flex-direction: column;\n  }\n  .plugin-linkmeta-previewer .basic .image {\n    flex-basis: auto;\n    max-width: 100%;\n    max-height: 220px;\n    min-height: 160px;\n    order: -1;\n  }\n  .plugin-linkmeta-previewer .video iframe {\n    max-width: 100%;\n  }\n}\n";
   n(css,{});
 
   /**
@@ -2877,19 +2877,40 @@ definePlugin('@plugins/com.msgbyte.linkmeta', ['@capital/common', 'react', '@cap
 
   var get_1 = get;
 
+  function getDisplayHost(url) {
+    try {
+      return new URL(url).hostname.replace(/^www\./, "");
+    } catch (e) {
+      return url;
+    }
+  }
   const UrlMetaBase = React__default["default"].memo(({ meta }) => {
     const imageUrl = get_1(meta, "images.0");
     const videoUrl = get_1(meta, "videos.0");
+    const siteName = get_1(meta, "siteName") || getDisplayHost(meta.url);
+    const title = get_1(meta, "title") || siteName;
+    const description = get_1(meta, "description");
+    const favicon = get_1(meta, "favicons.0");
     return /* @__PURE__ */ React__default["default"].createElement(React__default["default"].Fragment, null, /* @__PURE__ */ React__default["default"].createElement("div", {
-      className: "basic"
-    }, /* @__PURE__ */ React__default["default"].createElement("div", {
-      className: "summary",
+      className: "basic",
       onClick: () => window.open(meta.url)
     }, /* @__PURE__ */ React__default["default"].createElement("div", {
+      className: "summary"
+    }, /* @__PURE__ */ React__default["default"].createElement("div", {
+      className: "source"
+    }, favicon && /* @__PURE__ */ React__default["default"].createElement("img", {
+      className: "favicon",
+      src: common.parseUrlStr(favicon),
+      alt: ""
+    }), /* @__PURE__ */ React__default["default"].createElement("span", null, siteName)), /* @__PURE__ */ React__default["default"].createElement("div", {
       className: "title"
-    }, get_1(meta, "title")), /* @__PURE__ */ React__default["default"].createElement("div", {
+    }, title), description && /* @__PURE__ */ React__default["default"].createElement("div", {
       className: "description"
-    }, get_1(meta, "description"))), imageUrl && /* @__PURE__ */ React__default["default"].createElement("div", {
+    }, description), /* @__PURE__ */ React__default["default"].createElement("div", {
+      className: "url"
+    }, /* @__PURE__ */ React__default["default"].createElement("span", null, getDisplayHost(meta.url)), /* @__PURE__ */ React__default["default"].createElement(component.Icon, {
+      icon: "mdi:open-in-new"
+    }))), imageUrl && /* @__PURE__ */ React__default["default"].createElement("div", {
       className: "image"
     }, /* @__PURE__ */ React__default["default"].createElement(component.Image, {
       preview: true,
@@ -2967,7 +2988,7 @@ definePlugin('@plugins/com.msgbyte.linkmeta', ['@capital/common', 'react', '@cap
     if (contentType.startsWith("application/")) {
       return null;
     }
-    if (meta["title"] === "") {
+    if (meta["title"] === "" && meta["siteName"] === "") {
       return null;
     }
     return /* @__PURE__ */ React__default["default"].createElement("div", {
@@ -3011,12 +3032,18 @@ definePlugin('@plugins/com.msgbyte.linkmeta', ['@capital/common', 'react', '@cap
   });
   UrlMetaPreviewer.displayName = "UrlMetaPreviewer";
 
+  function normalizeMatchedUrl(url) {
+    return url.replace(/[),.;!?，。；！？]+$/, "");
+  }
   common.regMessageExtraParser({
     name: "com.msgbyte.linkmeta/urlParser",
     render({ content }) {
       const matched = String(common.getMessageTextDecorators().serialize(String(content))).match(urlRegex());
       if (matched) {
-        const urlMatch = matched.filter((m) => !m.includes("[")).filter((m) => !m.startsWith(window.location.origin));
+        const urlMatch = matched.map(normalizeMatchedUrl).filter((m, index, list) => list.indexOf(m) === index).filter((m) => !m.startsWith(window.location.origin)).filter((m) => {
+          const text = String(content);
+          return !text.includes(`](${m})`);
+        });
         if (urlMatch.length > 0 && typeof urlMatch[0] === "string") {
           return /* @__PURE__ */ React__default["default"].createElement(UrlMetaPreviewer, {
             url: urlMatch[0]

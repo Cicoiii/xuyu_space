@@ -1,5 +1,5 @@
-productName: Tailchat
-appId: com.msgbyte.tailchat
+productName: 序语空间
+appId: com.xuyuspace.desktop
 asar: true
 asarUnpack: '**\*.{node,dll}'
 files:
@@ -44,5 +44,5 @@ extraResources:
   - ./assets/**
 # publish:
 #   provider: github
-#   owner: msgbyte
-#   repo: tailchat
+#   owner: xuyu-space
+#   repo: xuyu-space-desktop

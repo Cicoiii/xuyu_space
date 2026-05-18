@@ -2,7 +2,7 @@
   "name": "@plugins/com.msgbyte.topic",
   "main": "src/index.tsx",
   "version": "0.0.0",
-  "description": "为群组提供话题功能",
+  "description": "为群组提供现代社区话题流",
   "private": true,
   "scripts": {
     "sync:declaration": "tailchat declaration github"

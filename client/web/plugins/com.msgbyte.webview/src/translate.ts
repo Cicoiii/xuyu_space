@@ -27,7 +27,24 @@ export const Translate = {
     'en-US': 'Open in extra',
   }),
   editTip: localTrans({
-    'zh-CN': '使用html语法编辑, 关闭窗口自动保存',
-    'en-US': 'Edit with html syntax, close the window and save automatically',
+    'zh-CN': '使用现代 HTML 语法编辑，关闭窗口自动保存',
+    'en-US':
+      'Edit with modern HTML syntax, close the window and save automatically',
+  }),
+  insertHTML5Template: localTrans({
+    'zh-CN': '插入 HTML5 模板',
+    'en-US': 'Insert HTML5 Template',
+  }),
+  realtimePreview: localTrans({
+    'zh-CN': '实时预览',
+    'en-US': 'Live Preview',
+  }),
+  lines: localTrans({
+    'zh-CN': '行',
+    'en-US': 'lines',
+  }),
+  characters: localTrans({
+    'zh-CN': '字符',
+    'en-US': 'characters',
   }),
 };

@@ -4,6 +4,7 @@ import { Space, Tag } from 'antd';
 import React, { useEffect } from 'react';
 import { t, UserBaseInfo } from 'tailchat-shared';
 import { UserProfileContainer } from '../../UserProfileContainer';
+import { UserPopoverAddFriendButton } from './UserPopoverAddFriendButton';
 import { usePluginUserExtraInfo } from './usePluginUserExtraInfo';
 
 export const PersonalUserPopover: React.FC<{
@@ -44,6 +45,10 @@ export const PersonalUserPopover: React.FC<{
         </Space>
 
         <div className="pt-2">{pluginUserExtraInfoEl}</div>
+
+        <div className="text-right">
+          <UserPopoverAddFriendButton userId={userInfo._id} />
+        </div>
       </UserProfileContainer>
     </div>
   );

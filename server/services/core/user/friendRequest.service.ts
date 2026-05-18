@@ -41,6 +41,12 @@ class FriendService extends TcService {
         requestId: 'string',
       },
     });
+    this.registerAction('removeBetween', this.removeBetween, {
+      params: {
+        user1: 'string',
+        user2: 'string',
+      },
+    });
   }
 
   /**
@@ -185,6 +191,41 @@ class FriendService extends TcService {
         requestId,
       }
     );
+  }
+
+  /**
+   * 移除两个用户之间所有待处理好友请求
+   */
+  async removeBetween(ctx: TcContext<{ user1: string; user2: string }>) {
+    const { user1, user2 } = ctx.params;
+    const requests: FriendRequest[] = await this.adapter.find({
+      query: {
+        $or: [
+          { from: user1, to: user2 },
+          { from: user2, to: user1 },
+        ],
+      },
+    });
+
+    await this.adapter.model.deleteMany({
+      $or: [
+        { from: user1, to: user2 },
+        { from: user2, to: user1 },
+      ],
+    });
+
+    requests.forEach((request) => {
+      this.listcastNotify(
+        ctx,
+        [String(request.from), String(request.to)],
+        'remove',
+        {
+          requestId: String(request._id),
+        }
+      );
+    });
+
+    return requests.length;
   }
 }
 export default FriendService;

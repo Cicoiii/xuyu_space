@@ -1,5 +1,8 @@
 import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { useUserSessionPreference } from '@/hooks/useUserPreference';
+import {
+  useRecordQuickSwitcherVisitedAction,
+  useUserSessionPreference,
+} from '@/hooks/useUserPreference';
 import { pluginCustomPanel } from '@/plugin/common';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router';
@@ -10,6 +13,7 @@ import { FriendPanel } from './Friends';
 import { PluginsPanel } from './Plugins';
 import { PersonalSidebar } from './Sidebar';
 import { useGlobalConfigStore } from 'tailchat-shared';
+import { QUICK_SWITCHER_ACTION_KEYS } from '@/components/QuickSwitcher/actionKeys';
 
 export const Personal: React.FC = React.memo(() => {
   const [lastVisitPanelUrl, setLastVisitPanelUrl] = useUserSessionPreference(
@@ -19,9 +23,31 @@ export const Personal: React.FC = React.memo(() => {
   const disablePluginStore = useGlobalConfigStore(
     (state) => state.disablePluginStore
   );
+  const recordQuickSwitcherVisitedAction =
+    useRecordQuickSwitcherVisitedAction();
 
   useEffect(() => {
     setLastVisitPanelUrl(location.pathname);
+
+    const personalCustomPrefix = '/main/personal/custom/';
+    if (location.pathname === '/main/personal/friends') {
+      recordQuickSwitcherVisitedAction(QUICK_SWITCHER_ACTION_KEYS.personal);
+    } else if (location.pathname === '/main/personal/plugins') {
+      recordQuickSwitcherVisitedAction(QUICK_SWITCHER_ACTION_KEYS.plugins);
+    } else if (location.pathname.startsWith('/main/personal/converse/')) {
+      const converseId = location.pathname.split('/').pop();
+      if (converseId) {
+        recordQuickSwitcherVisitedAction(
+          QUICK_SWITCHER_ACTION_KEYS.dmConverse(converseId)
+        );
+      }
+    } else if (location.pathname.startsWith(personalCustomPrefix)) {
+      recordQuickSwitcherVisitedAction(
+        QUICK_SWITCHER_ACTION_KEYS.personalCustomPanel(
+          location.pathname.slice(personalCustomPrefix.length)
+        )
+      );
+    }
   }, [location.pathname]);
 
   return (

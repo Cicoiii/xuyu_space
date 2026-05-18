@@ -119,6 +119,19 @@ function listenNotify(socket: AppSocket, store: AppStore) {
     store.dispatch(userActions.appendFriend({ id: userId }));
   });
 
+  socket.listen<{ friendUserId: string; converseId?: string }>(
+    'friend.remove',
+    ({ friendUserId, converseId }) => {
+      if (typeof friendUserId === 'string') {
+        store.dispatch(userActions.removeFriend(friendUserId));
+      }
+
+      if (typeof converseId === 'string') {
+        store.dispatch(chatActions.removeConverse({ converseId }));
+      }
+    }
+  );
+
   socket.listen<FriendRequest>('friend.request.add', (request) => {
     store.dispatch(userActions.appendFriendRequest(request));
   });

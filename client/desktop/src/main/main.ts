@@ -25,7 +25,7 @@ import windowStateKeeper from 'electron-window-state';
 import is from 'electron-is';
 import { initScreenshots } from './screenshots';
 import { generateInjectedScript } from './inject';
-import { handleTailchatMessage } from './inject/message-handler';
+import { handleXuyuSpaceMessage } from './inject/message-handler';
 import { initWebviewManager } from './lib/webview-manager';
 
 log.info('Start...');
@@ -209,7 +209,7 @@ const createMainWindow = async (url: string) => {
       if (channel === 'webview-message') {
         const obj = JSON.parse(data);
         if (typeof obj === 'object' && obj._isTailchat === true && mainWindow) {
-          handleTailchatMessage(
+          handleXuyuSpaceMessage(
             obj.type,
             obj.payload,
             mainWindow.webContents,

@@ -137,8 +137,8 @@ export const builtinPlugins: PluginManifest[] = _compact([
     icon: '/plugins/com.msgbyte.ai-assistant/assets/icon.png',
     version: '0.0.0',
     author: 'moonrailgun',
-    description: 'Xiaoxu Agent for schedules, messages, notifications, conversations, groups, briefings, and text assistance',
-    'description.zh-CN': '小序助手，支持日程、消息、通知、群聊、群组、简报和文本处理',
+    description: 'Xiaoxu Agent for schedules, messages, notifications, conversations, groups, and text assistance',
+    'description.zh-CN': '小序助手，支持日程、消息、通知、群聊、群组和文本处理',
     requireRestart: true,
   },
   {

@@ -12,6 +12,11 @@ interface UserSessionPerference {
    * 用于切换群组时回到最后一个
    */
   groupLastVisitPanel?: Record<string, string>;
+  /**
+   * 用户访问过的快速切换窗口
+   * 用于快速搜索未输入关键字时展示
+   */
+  quickSwitcherVisitedActionKeys?: string[];
 }
 
 /**
@@ -25,11 +30,28 @@ export function useUserSessionPreference<T extends keyof UserSessionPerference>(
     useSessionStorageState<UserSessionPerference>('sessionPreference');
   const value = preference[scope];
   const setValue = useMemoizedFn((value: UserSessionPerference[T]) => {
-    setPreference({
-      ...preference,
+    setPreference((previousPreference = {}) => ({
+      ...previousPreference,
       [scope]: value,
-    });
+    }));
   });
 
   return [value, setValue];
+}
+
+export function useRecordQuickSwitcherVisitedAction() {
+  const [, setPreference] =
+    useSessionStorageState<UserSessionPerference>('sessionPreference');
+
+  return useMemoizedFn((actionKey: string) => {
+    setPreference((previousPreference = {}) => ({
+      ...previousPreference,
+      quickSwitcherVisitedActionKeys: [
+        actionKey,
+        ...(previousPreference.quickSwitcherVisitedActionKeys ?? []).filter(
+          (key) => key !== actionKey
+        ),
+      ],
+    }));
+  });
 }

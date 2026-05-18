@@ -19,6 +19,9 @@ if (process.env.NODE_ENV === 'production') {
 
 const port = process.env.PORT || 1212;
 const manifest = path.resolve(webpackPaths.dllPath, 'renderer.json');
+const packageManager = process.env.npm_execpath?.includes('yarn')
+  ? 'yarn'
+  : 'npm';
 const skipDLLs =
   module.parent?.filename.includes('webpack.config.renderer.dev.dll') ||
   module.parent?.filename.includes('webpack.config.eslint');
@@ -32,10 +35,10 @@ if (
 ) {
   console.log(
     chalk.black.bgYellow.bold(
-      'The DLL files are missing. Sit back while we build them for you with "npm run build-dll"'
+      `The DLL files are missing. Sit back while we build them for you with "${packageManager} run postinstall"`
     )
   );
-  execSync('npm run postinstall');
+  execSync(`${packageManager} run postinstall`);
 }
 
 const configuration: webpack.Configuration = {
@@ -182,7 +185,7 @@ const configuration: webpack.Configuration = {
     },
     setupMiddlewares(middlewares) {
       console.log('Starting preload.js builder...');
-      const preloadProcess = spawn('npm', ['run', 'start:preload'], {
+      const preloadProcess = spawn(packageManager, ['run', 'start:preload'], {
         shell: true,
         stdio: 'inherit',
       })
@@ -196,7 +199,7 @@ const configuration: webpack.Configuration = {
           ['--', ...process.env.MAIN_ARGS.matchAll(/"[^"]+"|[^\s"]+/g)].flat()
         );
       }
-      spawn('npm', args, {
+      spawn(packageManager, args, {
         shell: true,
         stdio: 'inherit',
       })

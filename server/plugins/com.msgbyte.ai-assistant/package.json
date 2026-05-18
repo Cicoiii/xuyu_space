@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "moonrailgun",
-  "description": "小序助手，支持日程、消息、通知、群聊、群组、简报和文本处理，基于 DeepSeek",
+  "description": "小序助手，支持日程、消息、通知、群聊、群组和文本处理，基于 DeepSeek",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build:web": "ministar buildPlugin all",
-    "build:web:watch": "ministar watchPlugin all"
+    "build:web": "ministar buildPlugin com.msgbyte.ai-assistant",
+    "build:web:watch": "ministar watchPlugin com.msgbyte.ai-assistant"
   },
   "dependencies": {
     "tailchat-server-sdk": "*"

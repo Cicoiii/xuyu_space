@@ -164,11 +164,15 @@ declare module '@capital/common' {
 
   export const useGroupPanelInfo: any;
 
+  export const useGroupInfo: any;
+
   export const sendMessage: any;
 
   export const showMessageTime: any;
 
   export const joinArray: any;
+
+  export const parseUrlStr: any;
 
   export const navigate: any;
 
@@ -397,6 +401,8 @@ declare module '@capital/component' {
   export const Link: any;
 
   export const MessageAckContainer: any;
+
+  export const Popconfirm: any;
 
   export const Image: any;
 

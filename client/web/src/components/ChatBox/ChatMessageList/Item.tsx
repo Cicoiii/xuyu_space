@@ -9,24 +9,22 @@ import {
   MessageHelper,
   showMessageTime,
   useUserInfoList,
-  UserBaseInfo,
   useUserSettings,
   useUserId,
 } from 'tailchat-shared';
 import { useRenderPluginMessageInterpreter } from './useRenderPluginMessageInterpreter';
 import { getMessageRender, pluginMessageExtraParsers } from '@/plugin/common';
-import { Divider, Dropdown, Popover } from 'antd';
+import { Divider, Dropdown } from 'antd';
 import { UserName } from '@/components/UserName';
+import { UserAvatar } from '@/components/UserAvatar';
 import clsx from 'clsx';
 import { useChatMessageItemAction } from './useChatMessageItemAction';
 import { useChatMessageReactionAction } from './useChatMessageReaction';
 import { TcPopover } from '@/components/TcPopover';
 import { useMessageReactions } from './useMessageReactions';
 import { stopPropagation } from '@/utils/dom-helper';
-import { AutoFolder, Avatar, Icon } from 'tailchat-design';
+import { AutoFolder, Icon } from 'tailchat-design';
 import { MessageAckContainer } from './MessageAckContainer';
-import { UserPopover } from '@/components/popover/UserPopover';
-import _isEmpty from 'lodash/isEmpty';
 import type { LocalChatMessage } from 'tailchat-shared/model/message';
 import './Item.less';
 
@@ -102,22 +100,7 @@ export const NormalMessage: React.FC<ChatMessageItemProps> = React.memo(
         {/* 头像 */}
         <div className="w-18 mobile:w-14 flex items-start justify-center pt-0.5">
           {showAvatar ? (
-            <Popover
-              content={
-                !_isEmpty(userInfo) && (
-                  <UserPopover userInfo={userInfo as UserBaseInfo} />
-                )
-              }
-              placement="top"
-              trigger="click"
-            >
-              <Avatar
-                className="cursor-pointer"
-                size={40}
-                src={userInfo.avatar}
-                name={userInfo.nickname}
-              />
-            </Popover>
+            <UserAvatar userId={payload.author ?? ''} size={40} />
           ) : (
             <div className="hidden group-hover:block opacity-40">
               {formatShortTime(payload.createdAt)}

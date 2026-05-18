@@ -25,14 +25,6 @@ interface AgentMessage {
   actions?: AgentAction[];
 }
 
-interface Report {
-  highlights?: string[];
-  progress?: string[];
-  decisions?: string[];
-  blockers?: string[];
-  todos?: string[];
-}
-
 const BRAND = 'var(--tc-primary-color)';
 const BRAND_HOVER = 'var(--tc-primary-hover-color)';
 const SURFACE = 'var(--tc-surface-panel-color)';
@@ -58,16 +50,7 @@ const actionIcons: Record<string, string> = {
   notify_users: 'mdi:bell-ring-outline',
   create_converse: 'mdi:account-multiple-plus-outline',
   create_group: 'mdi:account-group-outline',
-  generate_report: 'mdi:file-document-outline',
 };
-
-const reportSections: Array<[keyof Report, string]> = [
-  ['highlights', '概览'],
-  ['progress', '进度'],
-  ['decisions', '决策'],
-  ['blockers', '风险'],
-  ['todos', '待办'],
-];
 
 const CopyButton: React.FC<{ text: string }> = React.memo(({ text }) => {
   const [copied, setCopied] = useState(false);
@@ -158,17 +141,6 @@ const StreamingContent: React.FC<{ fullContent: string; onDone: () => void }> =
   });
 StreamingContent.displayName = 'StreamingContent';
 
-function stringifyReport(report: Report) {
-  return reportSections
-    .map(([key, title]) => {
-      const items = report[key] ?? [];
-      if (items.length === 0) return '';
-      return `### ${title}\n${items.map((item) => `- ${item}`).join('\n')}`;
-    })
-    .filter(Boolean)
-    .join('\n\n');
-}
-
 export const AssistantBubbleIcon: React.FC = React.memo(() => {
   const [visible, setVisible] = useState(false);
 
@@ -228,7 +200,6 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
     const [agentMessages, setAgentMessages] = useState<AgentMessage[]>([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [thinkMode, setThinkMode] = useState(false);
     const [expandedReasoning, setExpandedReasoning] = useState<Record<number, boolean>>({});
     const [executingKey, setExecutingKey] = useState('');
     const listRef = useRef<HTMLDivElement>(null);
@@ -246,7 +217,7 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
     const placeholder =
       mode === 'chat'
         ? '输入消息，与 AI 对话...'
-        : '例如：明天上午10点提醒我跟进合同；生成今日简报；建一个项目讨论群';
+        : '例如：明天上午10点提醒我跟进合同；给张三发消息说会议提前；建一个项目讨论群';
 
     useEffect(() => {
       if (listRef.current) {
@@ -301,7 +272,7 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
           const { data } = await pluginRequest.post('chat', {
             content: contextContent,
             action: 'chat',
-            thinkMode,
+            thinkMode: false,
           });
           setChatMessages((prev) => [
             ...prev,
@@ -321,7 +292,7 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
           setLoading(false);
         }
       },
-      [chatMessages, thinkMode]
+      [chatMessages]
     );
 
     const handleAgentSend = useCallback(async (text: string) => {
@@ -395,16 +366,11 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
           return;
         }
 
-        const reportText =
-          action.type === 'generate_report' && data?.report
-            ? stringifyReport(data.report)
-            : '';
-
         setAgentMessages((prev) => [
           ...prev,
           {
             role: 'system',
-            content: reportText || `已执行：${action.title}`,
+            content: `已执行：${action.title}`,
           },
         ]);
       } catch {
@@ -726,28 +692,6 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }} data-no-drag>
             {renderModeSwitch}
-            {mode === 'chat' && (
-              <button
-                onClick={() => setThinkMode((value) => !value)}
-                title="使用推理模型，回答更深入"
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 6,
-                  border: 'none',
-                  backgroundColor: thinkMode
-                    ? 'rgba(255,255,255,0.3)'
-                    : 'rgba(255,255,255,0.15)',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Icon icon="mdi:brain" style={{ fontSize: 14 }} />
-              </button>
-            )}
             <button
               onClick={handleNewChat}
               title="新对话"
@@ -830,7 +774,7 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
               <span style={{ fontSize: 13, color: TEXT_MUTED }}>
                 {mode === 'chat'
                   ? '输入消息，与 AI 对话...'
-                  : 'Agent 模式可处理简报、日程、通知、消息和群组动作'}
+                  : 'Agent 模式可处理日程、通知、消息和群组动作'}
               </span>
             </div>
           )}
@@ -854,7 +798,7 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
               >
                 <LoadingSpinner />
                 <span style={{ fontSize: 12, color: TEXT_MUTED }}>
-                  {mode === 'chat' && thinkMode ? '深度思考中...' : '思考中...'}
+                  思考中...
                 </span>
               </div>
             </div>
@@ -872,27 +816,6 @@ const FloatingAssistantWindow: React.FC<{ onClose: () => void }> = React.memo(
             backgroundColor: SURFACE,
           }}
         >
-          {mode === 'chat' && thinkMode && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                padding: '4px 10px',
-                borderRadius: 8,
-                backgroundColor: 'rgba(139,92,246,0.08)',
-                border: '1px solid rgba(139,92,246,0.15)',
-              }}
-            >
-              <Icon icon="mdi:brain" style={{ fontSize: 14, color: '#7c3aed' }} />
-              <span style={{ fontSize: 11, color: '#7c3aed', fontWeight: 500 }}>
-                深度思考
-              </span>
-              <span style={{ fontSize: 11, color: '#a78bfa' }}>
-                使用推理模型，回答更深入
-              </span>
-            </div>
-          )}
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
             <textarea
               value={input}

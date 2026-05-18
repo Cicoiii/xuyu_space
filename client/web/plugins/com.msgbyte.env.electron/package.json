@@ -1,0 +1,6 @@
+{
+  "name": "@plugins/com.msgbyte.env.electron",
+  "main": "src/index.tsx",
+  "version": "0.0.0",
+  "private": true
+}

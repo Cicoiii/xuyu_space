@@ -44,6 +44,15 @@ class ConverseService extends TcService {
         },
       }
     );
+    this.registerAction(
+      'findDMConverseWithMembers',
+      this.findDMConverseWithMembers,
+      {
+        params: {
+          memberIds: { type: 'array', items: 'string' },
+        },
+      }
+    );
     this.registerAction('findConverseInfo', this.findConverseInfo, {
       params: {
         converseId: 'string',
@@ -66,6 +75,23 @@ class ConverseService extends TcService {
     let converse: ConverseDocument;
     if (participantList.length === 2) {
       // 私信会话
+      const targetUserId = participantList.find((id) => id !== userId);
+      if (!targetUserId) {
+        throw new Error(t('成员数异常，无法创建会话'));
+      }
+
+      const isMutualFriend = await ctx.call<
+        boolean,
+        { user1: string; user2: string }
+      >('friend.checkMutualFriend', {
+        user1: userId,
+        user2: targetUserId,
+      });
+
+      if (!isMutualFriend) {
+        throw new NoPermissionError(t('对方不是你的好友，无法发起私聊'));
+      }
+
       converse = await this.adapter.model.findConverseWithMembers(
         participantList
       );
@@ -135,6 +161,28 @@ class ConverseService extends TcService {
           roomId
         );
       });
+    }
+
+    return await this.transformDocuments(ctx, {}, converse);
+  }
+
+  /**
+   * 查找固定成员的一对一私聊会话
+   */
+  async findDMConverseWithMembers(ctx: TcContext<{ memberIds: string[] }>) {
+    const memberIds = _.uniq(ctx.params.memberIds);
+    const t = ctx.meta.t;
+
+    if (memberIds.length !== 2) {
+      throw new Error(t('成员数异常，无法查找私聊会话'));
+    }
+
+    const converse = await this.adapter.model.findConverseWithMembers(
+      memberIds
+    );
+
+    if (!converse || converse.type !== 'DM') {
+      return null;
     }
 
     return await this.transformDocuments(ctx, {}, converse);

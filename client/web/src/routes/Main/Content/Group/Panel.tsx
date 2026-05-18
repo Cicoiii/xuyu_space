@@ -1,8 +1,12 @@
 import { GroupPluginPanel } from '@/components/Panel/group/PluginPanel';
 import { TextPanel } from '@/components/Panel/group/TextPanel';
 import { Problem } from '@/components/Problem';
+import { QUICK_SWITCHER_ACTION_KEYS } from '@/components/QuickSwitcher/actionKeys';
 import { GroupPanelContext } from '@/context/GroupPanelContext';
-import { useUserSessionPreference } from '@/hooks/useUserPreference';
+import {
+  useRecordQuickSwitcherVisitedAction,
+  useUserSessionPreference,
+} from '@/hooks/useUserPreference';
 import React, { useEffect, useMemo } from 'react';
 import {
   GroupInfoContextProvider,
@@ -22,12 +26,17 @@ function useRecordGroupPanel(groupId: string, panelId: string) {
   const [lastVisitPanel, setLastVisitPanel] = useUserSessionPreference(
     'groupLastVisitPanel'
   );
+  const recordQuickSwitcherVisitedAction =
+    useRecordQuickSwitcherVisitedAction();
 
   useEffect(() => {
     setLastVisitPanel({
       ...lastVisitPanel,
       [groupId]: panelId,
     });
+    recordQuickSwitcherVisitedAction(
+      QUICK_SWITCHER_ACTION_KEYS.groupPanel(groupId, panelId)
+    );
   }, [groupId, panelId]);
 }
 

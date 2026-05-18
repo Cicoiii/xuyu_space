@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "moonrailgun",
-  "description": "为群组提供话题功能",
+  "description": "为群组提供现代社区话题流",
   "license": "MIT",
   "private": true,
   "scripts": {

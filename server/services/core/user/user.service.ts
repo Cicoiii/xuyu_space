@@ -352,10 +352,13 @@ class UserService extends TcService {
     const otp = generateRandomNumStr(6); // 产生一次性6位数字密码
 
     const html = `
-    <p>您正在尝试验证序语空间账号的邮箱, 请使用以下 OTP 作为邮箱验证凭证:</p>
-    <h3>OTP: <strong>${otp}</strong></h3>
-    <p>该 OTP 将会在 10分钟 后过期</p>
-    <p style="color: grey;">如果并不是您触发的验证操作，请忽略此电子邮件。</p>`;
+    <p style="margin:0 0 16px;">您正在尝试验证序语空间账号邮箱。请在页面中输入以下 6 位验证码，完成账号安全确认。</p>
+    <div style="margin:18px 0 18px; padding:18px 20px; background:#f8fafc; border:1px solid #dbe4f0; border-radius:12px; text-align:center;">
+      <div style="font-size:12px; line-height:18px; color:#64748b; font-weight:700; letter-spacing:0.08em;">EMAIL VERIFICATION CODE</div>
+      <div style="margin-top:8px; font-size:32px; line-height:40px; color:#0f172a; font-weight:800; letter-spacing:0.32em;">${otp}</div>
+    </div>
+    <p style="margin:0 0 8px;">验证码将在 <strong>10 分钟</strong> 后过期。</p>
+    <p style="margin:0; color:#64748b;">如果并不是您触发的验证操作，请忽略此电子邮件。</p>`;
 
     await ctx.call('mail.sendMail', {
       to: email,
@@ -634,10 +637,13 @@ class UserService extends TcService {
     const otp = generateRandomNumStr(6); // 产生一次性6位数字密码
 
     const html = `
-    <p>忘记密码了？ 请使用以下 OTP 作为重置密码凭证:</p>
-    <h3>OTP: <strong>${otp}</strong></h3>
-    <p>该 OTP 将会在 10分钟 后过期</p>
-    <p style="color: grey;">如果并不是您触发的忘记密码操作，请忽略此电子邮件。</p>`;
+    <p style="margin:0 0 16px;">我们收到了重置序语空间账号密码的请求。请在页面中输入以下 6 位验证码继续操作。</p>
+    <div style="margin:18px 0 18px; padding:18px 20px; background:#f8fafc; border:1px solid #dbe4f0; border-radius:12px; text-align:center;">
+      <div style="font-size:12px; line-height:18px; color:#64748b; font-weight:700; letter-spacing:0.08em;">PASSWORD RESET CODE</div>
+      <div style="margin-top:8px; font-size:32px; line-height:40px; color:#0f172a; font-weight:800; letter-spacing:0.32em;">${otp}</div>
+    </div>
+    <p style="margin:0 0 8px;">验证码将在 <strong>10 分钟</strong> 后过期。</p>
+    <p style="margin:0; color:#64748b;">如果并不是您触发的忘记密码操作，请忽略此电子邮件。</p>`;
 
     await ctx.call('mail.sendMail', {
       to: email,

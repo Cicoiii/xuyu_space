@@ -16,7 +16,6 @@ import {
   showToasts,
   t,
   UploadFileResult,
-  useAlphaMode,
   useAppDispatch,
   useAsyncRequest,
   userActions,
@@ -30,7 +29,6 @@ import styles from '@/components/FullModal/FullModal.module.less';
 export const SettingsAccount: React.FC = React.memo(() => {
   const userInfo = useUserInfo();
   const dispatch = useAppDispatch();
-  const { isAlphaMode } = useAlphaMode();
   const userExtra = userInfo?.extra ?? {};
 
   const [, handleUserAvatarChange] = useAsyncRequest(
@@ -102,9 +100,6 @@ export const SettingsAccount: React.FC = React.memo(() => {
           </AvatarUploader>
         </div>
         <div className={styles.avatarFields}>
-          {isAlphaMode && (
-            <FullModalField title={t('用户ID')} content={userInfo._id} />
-          )}
           <FullModalField
             title={t('用户昵称')}
             value={userInfo.nickname}

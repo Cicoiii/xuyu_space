@@ -218,6 +218,12 @@ const chatSlice = createSlice({
       }
 
       delete state.converses[converseId];
+      delete state.ack[converseId];
+      delete state.lastMessageMap[converseId];
+
+      if (state.currentConverseId === converseId) {
+        state.currentConverseId = null;
+      }
     },
 
     /**

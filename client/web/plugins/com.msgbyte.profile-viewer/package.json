@@ -1,0 +1,10 @@
+{
+  "name": "@plugins/com.msgbyte.profile-viewer",
+  "main": "src/index.tsx",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "react": "18.2.0"
+  }
+}

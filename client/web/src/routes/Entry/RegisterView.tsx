@@ -68,6 +68,12 @@ export const RegisterView: React.FC = React.memo(() => {
 
   const [{ loading: sendEmailLoading }, handleSendEmail] =
     useAsyncRequest(async () => {
+      await string()
+        .email(t('邮箱格式不正确'))
+        .required(t('邮箱不能为空'))
+        .max(40, t('邮箱最长限制40个字符'))
+        .validate(email);
+
       await model.user.verifyEmail(email);
       showSuccessToasts(t('发送成功, 请检查你的邮箱。'));
       setSendedEmail(true);
@@ -98,24 +104,65 @@ export const RegisterView: React.FC = React.memo(() => {
         </div>
 
         {getGlobalConfig().emailVerification && (
-          <>
-            {!sendedEmail && (
-              <PrimaryBtn loading={sendEmailLoading} onClick={handleSendEmail}>
-                {t('向邮箱发送校验码')}
+          <div className={styles.emailTrustPanel}>
+            <div className={styles.emailTrustHeader}>
+              <div className={styles.emailTrustIcon}>
+                <Icon icon="mdi:email-check-outline" />
+              </div>
+              <div className={styles.emailTrustCopy}>
+                <div className={styles.emailTrustTitle}>
+                  {t('用真实邮箱守护公益社区')}
+                </div>
+                <div className={styles.emailTrustDesc}>
+                  {t('我们只将验证码用于账号安全, 让每一次加入都更可靠。')}
+                </div>
+              </div>
+            </div>
+
+            {!sendedEmail ? (
+              <PrimaryBtn
+                className={styles.emailTrustAction}
+                loading={sendEmailLoading}
+                disabled={!email.trim()}
+                onClick={handleSendEmail}
+              >
+                <Icon icon="mdi:send" className="mr-1 inline" />
+                {t('发送安全验证码')}
               </PrimaryBtn>
+            ) : (
+              <div className={styles.emailSentState}>
+                <Icon icon="mdi:check-circle-outline" />
+                <span>
+                  {t('验证码已发送, 请查收邮箱 {{email}}', {
+                    email,
+                  })}
+                </span>
+              </div>
             )}
 
             <div className="mb-4">
-              <div className="mb-2">{t('邮箱校验码')}</div>
+              <div className={styles.labelRow}>
+                <div className={styles.label}>{t('邮箱校验码')}</div>
+                {sendedEmail && (
+                  <button
+                    className={styles.inlineLink}
+                    disabled={sendEmailLoading}
+                    onClick={handleSendEmail}
+                  >
+                    {t('重新发送')}
+                  </button>
+                )}
+              </div>
               <EntryInput
                 name="reg-email-otp"
                 type="text"
                 placeholder="6位校验码"
+                maxLength={6}
                 value={emailOTP}
                 onChange={(e) => setEmailOTP(e.target.value)}
               />
             </div>
-          </>
+          </div>
         )}
 
         <div className="mb-4 relative">

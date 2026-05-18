@@ -12,6 +12,12 @@ class GroupTopicComment extends TimeStamps {
   @prop()
   content: string;
 
+  @prop({
+    type: () => String,
+    default: [],
+  })
+  images: string[];
+
   @prop()
   author: string;
 
@@ -20,6 +26,28 @@ class GroupTopicComment extends TimeStamps {
    */
   @prop()
   replyCommentId?: string;
+
+  @prop({
+    type: () => String,
+    default: [],
+  })
+  upvotes: string[];
+
+  /**
+   * 话题作者是否赞过该评论
+   */
+  @prop({
+    default: false,
+  })
+  authorLiked: boolean;
+
+  /**
+   * 是否置顶评论
+   */
+  @prop({
+    default: false,
+  })
+  pinned: boolean;
 }
 
 @modelOptions({
@@ -33,6 +61,12 @@ export class GroupTopic extends TimeStamps implements db.Base {
 
   @prop()
   content: string;
+
+  @prop({
+    type: () => String,
+    default: [],
+  })
+  images: string[];
 
   @prop()
   author: string;
@@ -51,6 +85,12 @@ export class GroupTopic extends TimeStamps implements db.Base {
     default: [],
   })
   comments: GroupTopicComment[];
+
+  @prop({
+    type: () => String,
+    default: [],
+  })
+  upvotes: string[];
 
   /**
    * 话题的其他数据

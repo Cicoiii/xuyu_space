@@ -2,7 +2,7 @@
   "name": "@plugins/com.msgbyte.ai-assistant",
   "main": "src/index.tsx",
   "version": "0.0.0",
-  "description": "小序助手，支持日程、消息、通知、群聊、群组、简报和文本处理",
+  "description": "小序助手，支持日程、消息、通知、群聊、群组和文本处理",
   "private": true,
   "scripts": {
     "sync:declaration": "tailchat declaration github"

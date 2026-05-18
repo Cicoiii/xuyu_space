@@ -4,6 +4,7 @@
  */
 
 import _pick from 'lodash/pick';
+export { registerCoreUserExtraInfo } from './coreUserExtraInfo';
 export * from './reg';
 export * from './context';
 export { useGroupPanelParams } from '@/routes/Main/Content/Group/utils';

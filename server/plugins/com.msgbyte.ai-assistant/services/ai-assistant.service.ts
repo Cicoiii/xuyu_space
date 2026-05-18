@@ -1,16 +1,49 @@
 import {
   GroupPanelType,
   TcContext,
+  TcDbService,
   TcPureContext,
   TcService,
 } from 'tailchat-server-sdk';
+import type {
+  AIAssistantConfigDocument,
+  AIAssistantConfigModel,
+} from '../models/aiConfig';
 
-const DEEPSEEK_API_URL =
-  process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com/v1';
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
-const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
-const DEEPSEEK_THINK_MODEL =
-  process.env.DEEPSEEK_THINK_MODEL || 'deepseek-reasoner';
+const CONFIG_NAME = 'global';
+const DEFAULT_AI_PROVIDER_NAME =
+  process.env.AI_PROVIDER_NAME || process.env.DEEPSEEK_PROVIDER_NAME || 'DeepSeek';
+const DEFAULT_AI_API_URL =
+  process.env.AI_API_URL ||
+  process.env.DEEPSEEK_API_URL ||
+  'https://api.deepseek.com/v1';
+const DEFAULT_AI_API_KEY =
+  process.env.AI_API_KEY || process.env.DEEPSEEK_API_KEY || '';
+const DEFAULT_AI_CHAT_MODEL =
+  process.env.AI_CHAT_MODEL || process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+const DEFAULT_AI_THINK_MODEL =
+  process.env.AI_THINK_MODEL ||
+  process.env.DEEPSEEK_THINK_MODEL ||
+  'deepseek-reasoner';
+const DEFAULT_AI_FLASH_MODEL = 'deepseek-v4-flash';
+const FLASH_MODEL_CANDIDATES = [
+  process.env.AI_FLASH_MODEL,
+  process.env.DEEPSEEK_FLASH_MODEL,
+  DEFAULT_AI_CHAT_MODEL,
+];
+
+interface LLMConfig {
+  providerName: string;
+  apiUrl: string;
+  apiKey: string;
+  chatModel: string;
+  thinkModel: string;
+}
+
+interface PublicLLMConfig extends Omit<LLMConfig, 'apiKey'> {
+  configured: boolean;
+  apiKeyMasked: string;
+}
 
 type ActionType =
   | 'improve'
@@ -20,20 +53,22 @@ type ActionType =
   | 'summary'
   | 'chat';
 
+const SUPPORTED_ASSISTANT_ACTIONS = new Set([
+  'create_task',
+  'send_message',
+  'send_dm',
+  'notify_self',
+  'notify_users',
+  'create_converse',
+  'create_group',
+]);
+
 type AssistantAction = {
   type: string;
   title: string;
   payload: Record<string, any>;
   requireConfirm?: boolean;
 };
-
-interface GenerateReportParams {
-  channelIds?: string[];
-  date?: string;
-  includeDM?: boolean;
-  includeGroups?: boolean;
-  maxConversations?: number;
-}
 
 interface GroupPanel {
   id: string;
@@ -59,31 +94,6 @@ interface ConverseInfo {
   name?: string;
   type?: 'DM' | 'Multi' | 'Group';
   members?: string[];
-}
-
-interface ChatMessage {
-  _id: string;
-  content: string;
-  plain?: string;
-  converseId: string;
-  author?: string;
-  sender?: {
-    _id: string;
-    nickname: string;
-  };
-  createdAt: string;
-  type?: string;
-}
-
-interface CleanedMessage {
-  content: string;
-  msgId: string;
-  converseId: string;
-  sender: string;
-  timestamp: number;
-  sourceName?: string;
-  reasons?: string[];
-  importance?: number;
 }
 
 interface FriendInfo {
@@ -119,33 +129,6 @@ const SYSTEM_PROMPTS: Record<ActionType, string> = {
   chat: `你是"小序"，一款名为"序语空间"的办公协作平台的智能助手。你亲切、专业、高效，始终以帮助用户解决问题为第一目标。`,
 };
 
-const IMPORTANT_PATTERNS = {
-  decision: [
-    /决定|确认|定了|结论|方案|采用|不采用|上线|发布|合并|通过|同意|拍板/,
-    /\b(decide|decided|confirm|confirmed|approved|ship|release|merge)\b/i,
-  ],
-  todo: [
-    /待办|TODO|todo|需要|请|负责|安排|跟进|处理|修复|实现|补充|提交|同步|排查|验证|review/i,
-    /@[\w\u4e00-\u9fa5-]+/,
-  ],
-  blocker: [
-    /阻塞|卡住|风险|问题|失败|报错|延期|延迟|来不及|不可用|不能|无法|缺少|依赖|冲突/,
-    /\b(block|blocked|risk|issue|failed|error|delay|missing|cannot|can't)\b/i,
-  ],
-  progress: [
-    /完成|已|已经|推进|更新|修复|实现|接入|测试|验证|上线|发布|提交|合并/,
-    /\b(done|fixed|implemented|updated|tested|deployed|released|merged)\b/i,
-  ],
-};
-
-const PRIVATE_CHAT_PATTERNS = [
-  /吃饭|午饭|晚饭|早饭|咖啡|周末|下班|睡觉|游戏|电影|哈哈|hhh|233|摸鱼/,
-  /\b(lunch|dinner|coffee|weekend|movie|game|lol|haha)\b/i,
-];
-
-const DEFAULT_MAX_CONVERSATIONS = 20;
-const FETCH_PAGES_PER_CONVERSATION = 3;
-
 const getLocalDateString = () => {
   const date = new Date();
   const offset = date.getTimezoneOffset();
@@ -154,6 +137,9 @@ const getLocalDateString = () => {
     .split('T')[0];
 };
 
+interface AIAssistantService
+  extends TcService,
+    TcDbService<AIAssistantConfigDocument, AIAssistantConfigModel> {}
 class AIAssistantService extends TcService {
   private userNameCache = new Map<string, string>();
 
@@ -162,6 +148,8 @@ class AIAssistantService extends TcService {
   }
 
   onInit() {
+    this.registerLocalDb(require('../models/aiConfig').default);
+
     this.registerAction('chat', this.chat, {
       params: {
         content: 'string',
@@ -183,17 +171,25 @@ class AIAssistantService extends TcService {
       },
     });
 
-    this.registerAction('generateReport', this.generateReport, {
+    this.registerAction('listChannels', this.listChannels);
+
+    this.registerAction('getConfig', this.getConfig);
+
+    this.registerAction('updateConfig', this.updateConfig, {
       params: {
-        channelIds: { type: 'array', items: 'string', optional: true },
-        date: { type: 'string', optional: true },
-        includeDM: { type: 'boolean', optional: true },
-        includeGroups: { type: 'boolean', optional: true },
-        maxConversations: { type: 'number', optional: true },
+        providerName: { type: 'string', optional: true },
+        apiUrl: { type: 'string', optional: true },
+        apiKey: { type: 'string', optional: true },
+        chatModel: { type: 'string', optional: true },
+        thinkModel: { type: 'string', optional: true },
       },
     });
 
-    this.registerAction('listChannels', this.listChannels);
+    this.registerAction('testConfig', this.testConfig, {
+      params: {
+        content: { type: 'string', optional: true },
+      },
+    });
 
     // The old text helper is intentionally public. User-data actions above must
     // keep normal auth so ctx.meta.userId/token are available.
@@ -207,11 +203,12 @@ class AIAssistantService extends TcService {
     const startTime = Date.now();
     const actionType = (action as ActionType) || 'chat';
     const useThinkMode = thinkMode === true;
+    const llmConfig = await this.getLLMConfig();
 
-    if (!DEEPSEEK_API_KEY) {
+    if (!llmConfig.apiKey) {
       return {
         result: false,
-        answer: '未配置 DEEPSEEK_API_KEY 环境变量，请联系管理员',
+        answer: 'AI 服务未配置 API Key，请在小序助手高级设置中配置',
         usage: 0,
       };
     }
@@ -227,19 +224,20 @@ class AIAssistantService extends TcService {
     const systemPrompt = SYSTEM_PROMPTS[actionType] || SYSTEM_PROMPTS.chat;
 
     try {
-      const model = useThinkMode ? DEEPSEEK_THINK_MODEL : DEEPSEEK_MODEL;
-      const maxTokens = useThinkMode ? 8192 : 2048;
+      const model = this.getFlashOnlyModel(llmConfig);
+      const maxTokens = 2048;
       const { answer, reasoning } = await this.callLLM(
         [
           { role: 'system', content: systemPrompt },
           { role: 'user', content },
         ],
         {
+          config: llmConfig,
           model,
           maxTokens,
-          timeout: useThinkMode ? 120000 : 60000,
-          temperature: useThinkMode ? undefined : 0.7,
-          includeReasoning: useThinkMode,
+          timeout: 60000,
+          temperature: 0.7,
+          includeReasoning: false,
         }
       );
 
@@ -295,7 +293,7 @@ class AIAssistantService extends TcService {
 
       return {
         result: true,
-        reply: plan.reply || '我可以帮你处理日程、消息、通知、群聊、群组和简报。',
+        reply: plan.reply || '我可以帮你处理日程、消息、通知、群聊和群组。',
         actions: this.normalizeAssistantActions(plan.actions),
       };
     } catch (err) {
@@ -304,7 +302,7 @@ class AIAssistantService extends TcService {
         result: true,
         reply:
           localPlan.reply ||
-          '我可以帮你处理日程、消息、通知、群聊、群组和简报。',
+          '我可以帮你处理日程、消息、通知、群聊和群组。',
         actions: localPlan.actions,
       };
     }
@@ -337,22 +335,6 @@ class AIAssistantService extends TcService {
         };
       case 'create_group':
         return { result: true, actionResult: await this.createGroup(ctx, payload) };
-      case 'generate_report':
-        return await this.generateReport({
-          ...ctx,
-          params: {
-            channelIds: Array.isArray(payload.channelIds)
-              ? payload.channelIds.map(String)
-              : undefined,
-            date: payload.date,
-            includeDM: payload.includeDM ?? true,
-            includeGroups: payload.includeGroups ?? true,
-            maxConversations:
-              typeof payload.maxConversations === 'number'
-                ? payload.maxConversations
-                : DEFAULT_MAX_CONVERSATIONS,
-          },
-        } as TcContext<GenerateReportParams>);
       default:
         return { result: false, error: `不支持的动作: ${type}` };
     }
@@ -368,56 +350,116 @@ class AIAssistantService extends TcService {
     return { result: true, channels };
   }
 
-  async generateReport(ctx: TcContext<GenerateReportParams>) {
-    const {
-      channelIds = [],
-      date,
-      includeDM = true,
-      includeGroups = true,
-      maxConversations = DEFAULT_MAX_CONVERSATIONS,
-    } = ctx.params;
-    const targetDate = date || getLocalDateString();
-    const channels =
-      channelIds.length > 0
-        ? await this.resolveChannels(ctx, channelIds, maxConversations)
-        : await this.listAvailableChannels(ctx, {
-            includeDM,
-            includeGroups,
-            maxConversations,
-          });
+  async getConfig(ctx: TcContext) {
+    const llmConfig = await this.getLLMConfig();
 
-    const allMessages: CleanedMessage[] = [];
-    for (const channel of channels) {
-      const messages = await this.fetchRecentMessages(ctx, channel.id);
-      const messagesWithSender = await this.attachSenderNames(ctx, messages);
-      allMessages.push(
-        ...this.cleanMessages(messagesWithSender)
-          .filter((message) => this.isMessageInDate(message.timestamp, targetDate))
-          .map((message) => ({ ...message, sourceName: channel.name }))
-      );
+    return this.toPublicConfig(llmConfig);
+  }
+
+  async updateConfig(
+    ctx: TcContext<{
+      providerName?: string;
+      apiUrl?: string;
+      apiKey?: string;
+      chatModel?: string;
+      thinkModel?: string;
+    }>
+  ) {
+    const current = await this.getStoredConfig();
+    const patch: Partial<LLMConfig> = {};
+    const normalized = {
+      providerName: this.normalizeOptionalString(ctx.params.providerName),
+      apiUrl: this.normalizeOptionalString(ctx.params.apiUrl),
+      apiKey: this.normalizeOptionalString(ctx.params.apiKey),
+      chatModel: this.normalizeOptionalString(ctx.params.chatModel),
+      thinkModel: this.normalizeOptionalString(ctx.params.thinkModel),
+    };
+
+    if (typeof normalized.providerName === 'string') {
+      patch.providerName = normalized.providerName;
     }
 
-    const importantMessages = this.selectImportantMessages(allMessages);
-    const report =
-      DEEPSEEK_API_KEY && importantMessages.length > 0
-        ? await this.generateLLMReport(importantMessages, targetDate)
-        : this.createFallbackReport(importantMessages, allMessages, targetDate);
+    if (typeof normalized.apiUrl === 'string') {
+      patch.apiUrl = normalized.apiUrl;
+    }
 
-    return {
-      result: true,
-      report,
-      metadata: {
-        channelCount: channels.length,
-        messageCount: allMessages.length,
-        importantMessageCount:
-          report.progress.length +
-          report.decisions.length +
-          report.blockers.length +
-          report.todos.length,
-        channels,
-        generatedAt: new Date().toISOString(),
+    if (typeof normalized.apiKey === 'string') {
+      patch.apiKey = normalized.apiKey;
+    }
+
+    if (typeof normalized.chatModel === 'string') {
+      patch.chatModel = normalized.chatModel;
+    }
+
+    if (typeof normalized.thinkModel === 'string') {
+      patch.thinkModel = normalized.thinkModel;
+    }
+
+    await this.adapter.model.findOneAndUpdate(
+      { name: CONFIG_NAME },
+      {
+        $set: {
+          name: CONFIG_NAME,
+          providerName:
+            patch.providerName ?? current?.providerName ?? DEFAULT_AI_PROVIDER_NAME,
+          apiUrl: patch.apiUrl ?? current?.apiUrl ?? DEFAULT_AI_API_URL,
+          apiKey: patch.apiKey ?? current?.apiKey ?? DEFAULT_AI_API_KEY,
+          chatModel: this.normalizeFlashModel(
+            patch.chatModel ?? current?.chatModel ?? DEFAULT_AI_CHAT_MODEL
+          ),
+          thinkModel: this.normalizeFlashModel(
+            patch.thinkModel ?? current?.thinkModel ?? DEFAULT_AI_THINK_MODEL
+          ),
+        },
       },
-    };
+      { upsert: true, new: true }
+    );
+
+    const llmConfig = await this.getLLMConfig();
+
+    return this.toPublicConfig(llmConfig);
+  }
+
+  async testConfig(ctx: TcContext<{ content?: string }>) {
+    const llmConfig = await this.getLLMConfig();
+    const content =
+      ctx.params.content?.trim() || '请用一句话回复：小序助手配置连接成功。';
+
+    if (!llmConfig.apiKey) {
+      return {
+        result: false,
+        answer: 'AI 服务未配置 API Key',
+      };
+    }
+
+    try {
+      const { answer } = await this.callLLM(
+        [
+          {
+            role: 'system',
+            content: '你是一个连接测试助手，请简洁回答。',
+          },
+          { role: 'user', content },
+        ],
+        {
+          config: llmConfig,
+          model: this.getFlashOnlyModel(llmConfig),
+          maxTokens: 256,
+          timeout: 30000,
+          temperature: 0.2,
+        }
+      );
+
+      return {
+        result: true,
+        answer,
+      };
+    } catch (err: any) {
+      return {
+        result: false,
+        answer: this.formatAIError(err),
+      };
+    }
   }
 
   private async planAssistantAction(
@@ -429,11 +471,13 @@ class AIAssistantService extends TcService {
       friends: FriendInfo[];
     }
   ): Promise<{ reply: string; actions: AssistantAction[] }> {
-    if (!DEEPSEEK_API_KEY) {
+    const llmConfig = await this.getLLMConfig();
+
+    if (!llmConfig.apiKey) {
       return { reply: '', actions: [] };
     }
 
-    const prompt = `你是"小序"，序语空间里的个人 Agent 助手。你可以帮用户整理简报、加日程/待办、发送消息、发通知、创建多人会话、创建群组。
+    const prompt = `你是"小序"，序语空间里的个人 Agent 助手。你可以帮用户加日程/待办、发送消息、发通知、创建多人会话、创建群组。
 
 当前日期: ${context.currentDate}
 当前用户: ${context.userName ?? 'Unknown'}
@@ -459,7 +503,6 @@ ${context.friends
 - notify_users payload={ "userIds": string[], "title": string, "content": string }
 - create_converse payload={ "memberIds": string[] }
 - create_group payload={ "name": string, "panelName"?: string }
-- generate_report payload={ "date"?: YYYY-MM-DD字符串 }
 
 有副作用的动作 requireConfirm 必须为 true。如果目标用户、会话不明确，不要猜 id，reply 里询问用户补充。
 返回格式: {"reply":"...","actions":[{"type":"create_task","title":"添加日程","payload":{},"requireConfirm":true}]}
@@ -468,7 +511,8 @@ ${context.friends
 ${userMessage}`;
 
     const { answer } = await this.callLLM([{ role: 'user', content: prompt }], {
-      model: DEEPSEEK_MODEL,
+      config: llmConfig,
+      model: this.getFlashOnlyModel(llmConfig),
       maxTokens: 2048,
       timeout: 60000,
       temperature: 0.2,
@@ -485,64 +529,8 @@ ${userMessage}`;
     }
   }
 
-  private async generateLLMReport(messages: CleanedMessage[], date: string) {
-    const messageText = messages
-      .slice(0, 160)
-      .map(
-        (m) =>
-          `[${m.sourceName ?? m.converseId}] [${m.sender}] (${m.msgId}): ${m.content}`
-      )
-      .join('\n');
-    const prompt = `根据以下聊天记录生成结构化简报，只输出 JSON:
-{
-  "highlights": ["概览"],
-  "progress": ["进度（包含msgId）"],
-  "decisions": ["决策（包含msgId）"],
-  "blockers": ["风险"],
-  "todos": ["待办"]
-}
-
-日期: ${date}
-聊天记录:
-${messageText}`;
-
-    try {
-      const { answer } = await this.callLLM([{ role: 'user', content: prompt }], {
-        model: DEEPSEEK_MODEL,
-        maxTokens: 2048,
-        timeout: 60000,
-        temperature: 0.4,
-      });
-      const parsed = JSON.parse(answer);
-      return {
-        highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],
-        progress: Array.isArray(parsed.progress) ? parsed.progress : [],
-        decisions: Array.isArray(parsed.decisions) ? parsed.decisions : [],
-        blockers: Array.isArray(parsed.blockers) ? parsed.blockers : [],
-        todos: Array.isArray(parsed.todos) ? parsed.todos : [],
-      };
-    } catch (err) {
-      this.logger.warn(`LLM report failed, fallback: ${err}`);
-      return this.createFallbackReport(messages, messages, date);
-    }
-  }
-
   private planWithRules(content: string): { reply: string; actions: AssistantAction[] } {
     const normalized = content.trim();
-    if (/简报|日报|总结|汇总/.test(normalized)) {
-      return {
-        reply: '我可以为你生成今日简报。',
-        actions: [
-          {
-            type: 'generate_report',
-            title: '生成今日简报',
-            payload: { date: getLocalDateString() },
-            requireConfirm: false,
-          },
-        ],
-      };
-    }
-
     const groupMatch = normalized.match(
       /(?:帮我|请)?(?:创建|新建|建)(?:一个)?(?:群组|群|空间)[：:，,\s]*(.+)/
     );
@@ -625,6 +613,7 @@ ${messageText}`;
   private normalizeAssistantActions(actions: AssistantAction[] = []) {
     return actions
       .filter((action) => action && typeof action.type === 'string')
+      .filter((action) => SUPPORTED_ASSISTANT_ACTIONS.has(action.type))
       .map((action) => ({
         type: action.type,
         title: action.title || this.getActionTitle(action.type),
@@ -642,7 +631,6 @@ ${messageText}`;
       notify_users: '发送通知',
       create_converse: '创建多人会话',
       create_group: '创建群组',
-      generate_report: '生成简报',
     };
     return titleMap[type] ?? type;
   }
@@ -769,143 +757,6 @@ ${messageText}`;
     } catch {
       return channels;
     }
-  }
-
-  private async fetchRecentMessages(ctx: TcContext, converseId: string) {
-    const messages: ChatMessage[] = [];
-    let startId: string | undefined;
-    for (let i = 0; i < FETCH_PAGES_PER_CONVERSATION; i++) {
-      const page = await ctx.call<ChatMessage[], { converseId: string; startId?: string }>(
-        'chat.message.fetchConverseMessage',
-        { converseId, startId }
-      );
-      if (!Array.isArray(page) || page.length === 0) break;
-      messages.push(...page);
-      startId = page[page.length - 1]._id;
-      if (page.length < 50) break;
-    }
-    return messages.reverse();
-  }
-
-  private async attachSenderNames(ctx: TcContext, messages: ChatMessage[]) {
-    return Promise.all(
-      messages.map(async (message) => {
-        if (message.sender?.nickname || !message.author) return message;
-        return {
-          ...message,
-          sender: {
-            _id: String(message.author),
-            nickname: await this.getUserName(ctx, String(message.author)),
-          },
-        };
-      })
-    );
-  }
-
-  private cleanMessages(messages: ChatMessage[]): CleanedMessage[] {
-    return messages
-      .filter((msg) => !['system', 'tip', 'recall', 'revoke'].includes(msg.type || ''))
-      .map((msg) => ({
-        content: this.normalizeText(msg.plain || msg.content || ''),
-        msgId: msg._id,
-        converseId: msg.converseId,
-        sender: msg.sender?.nickname || 'Unknown',
-        timestamp: new Date(msg.createdAt).getTime(),
-      }))
-      .filter((msg) => msg.content.replace(/\s/g, '').length >= 3);
-  }
-
-  private normalizeText(text: string) {
-    return text
-      .replace(
-        /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu,
-        ''
-      )
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  private selectImportantMessages(messages: CleanedMessage[], limit = 160) {
-    return messages
-      .map((message) => {
-        const { score, reasons } = this.scoreMessage(message.content);
-        return { ...message, importance: score, reasons };
-      })
-      .filter((message) => (message.importance ?? 0) >= 2)
-      .sort((a, b) => {
-        const importanceDiff = (b.importance ?? 0) - (a.importance ?? 0);
-        return importanceDiff === 0 ? b.timestamp - a.timestamp : importanceDiff;
-      })
-      .slice(0, limit)
-      .sort((a, b) => a.timestamp - b.timestamp);
-  }
-
-  private scoreMessage(content: string) {
-    const reasons: string[] = [];
-    let score = 0;
-    if (content.length >= 12) score += 1;
-    if (content.length >= 40) score += 1;
-    for (const [reason, patterns] of Object.entries(IMPORTANT_PATTERNS)) {
-      if (patterns.some((pattern) => pattern.test(content))) {
-        reasons.push(reason);
-        score += reason === 'decision' || reason === 'blocker' ? 3 : 2;
-      }
-    }
-    if (/https?:\/\/|www\./i.test(content)) score += 1;
-    if (PRIVATE_CHAT_PATTERNS.some((pattern) => pattern.test(content))) score -= 2;
-    return { score, reasons };
-  }
-
-  private createFallbackReport(
-    importantMessages: CleanedMessage[],
-    allMessages: CleanedMessage[],
-    date: string
-  ) {
-    if (importantMessages.length === 0) {
-      return {
-        progress: [],
-        decisions: [],
-        blockers: [],
-        todos: [],
-        highlights:
-          allMessages.length > 0
-            ? [`${date} 未识别到明确的进度、决策、风险或待办。`]
-            : [`${date} 暂无可用于生成简报的消息。`],
-      };
-    }
-    const pick = (reason: string, max: number) =>
-      importantMessages
-        .filter((message) => message.reasons?.includes(reason))
-        .slice(0, max)
-        .map((message) => this.formatReportLine(message));
-    return {
-      highlights: [
-        `已从 ${new Set(importantMessages.map((m) => m.converseId)).size} 个会话中筛选出 ${importantMessages.length} 条重要消息。`,
-      ],
-      progress: pick('progress', 8),
-      decisions: pick('decision', 8),
-      blockers: pick('blocker', 8),
-      todos: pick('todo', 10),
-    };
-  }
-
-  private formatReportLine(message: CleanedMessage) {
-    const source = message.sourceName ? `【${message.sourceName}】` : '';
-    const content =
-      message.content.length > 120
-        ? `${message.content.slice(0, 117)}...`
-        : message.content;
-    return `${source}${message.sender}: ${content} (msgId=${message.msgId})`;
-  }
-
-  private isMessageInDate(timestamp: number, targetDate: string) {
-    if (!timestamp || !targetDate) return true;
-    const date = new Date(timestamp);
-    const offset = date.getTimezoneOffset();
-    const localDate = new Date(date.getTime() - offset * 60 * 1000)
-      .toISOString()
-      .split('T')[0];
-    return localDate === targetDate;
   }
 
   private async listFriends(ctx: TcContext): Promise<FriendInfo[]> {
@@ -1047,6 +898,7 @@ ${messageText}`;
   private async callLLM(
     messages: Array<{ role: string; content: string }>,
     options: {
+      config: LLMConfig;
       model: string;
       maxTokens: number;
       timeout: number;
@@ -1054,11 +906,11 @@ ${messageText}`;
       includeReasoning?: boolean;
     }
   ) {
-    const res = await fetch(`${DEEPSEEK_API_URL}/chat/completions`, {
+    const res = await fetch(`${this.normalizeApiUrl(options.config.apiUrl)}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
+        Authorization: `Bearer ${options.config.apiKey}`,
       },
       body: JSON.stringify({
         model: options.model,
@@ -1079,6 +931,86 @@ ${messageText}`;
         ? body.choices?.[0]?.message?.reasoning_content ?? ''
         : '',
     };
+  }
+
+  private async getStoredConfig() {
+    return await this.adapter.model.findOne({ name: CONFIG_NAME });
+  }
+
+  private async getLLMConfig(): Promise<LLMConfig> {
+    const storedConfig = await this.getStoredConfig();
+
+    return {
+      providerName:
+        storedConfig?.providerName?.trim() || DEFAULT_AI_PROVIDER_NAME,
+      apiUrl: storedConfig?.apiUrl?.trim() || DEFAULT_AI_API_URL,
+      apiKey: storedConfig?.apiKey?.trim() || DEFAULT_AI_API_KEY,
+      chatModel: this.normalizeFlashModel(
+        storedConfig?.chatModel?.trim() || DEFAULT_AI_CHAT_MODEL
+      ),
+      thinkModel: this.normalizeFlashModel(
+        storedConfig?.thinkModel?.trim() || DEFAULT_AI_THINK_MODEL
+      ),
+    };
+  }
+
+  private getFlashOnlyModel(config: LLMConfig): string {
+    return this.normalizeFlashModel(config.chatModel || config.thinkModel);
+  }
+
+  private normalizeFlashModel(model: string): string {
+    const normalized = model.trim();
+
+    if (this.isFlashModel(normalized)) {
+      return normalized;
+    }
+
+    return (
+      FLASH_MODEL_CANDIDATES.find((candidate) =>
+        this.isFlashModel(candidate ?? '')
+      ) ?? DEFAULT_AI_FLASH_MODEL
+    );
+  }
+
+  private isFlashModel(model: string): boolean {
+    const normalized = model.trim().toLowerCase();
+
+    return normalized.includes('flash') && !normalized.includes('pro');
+  }
+
+  private toPublicConfig(config: LLMConfig): PublicLLMConfig {
+    return {
+      providerName: config.providerName,
+      apiUrl: config.apiUrl,
+      chatModel: config.chatModel,
+      thinkModel: config.thinkModel,
+      configured: Boolean(config.apiKey),
+      apiKeyMasked: this.maskApiKey(config.apiKey),
+    };
+  }
+
+  private maskApiKey(apiKey: string): string {
+    if (!apiKey) {
+      return '';
+    }
+
+    if (apiKey.length <= 8) {
+      return '********';
+    }
+
+    return `${apiKey.slice(0, 4)}...${apiKey.slice(-4)}`;
+  }
+
+  private normalizeOptionalString(value: unknown): string | undefined {
+    if (typeof value !== 'string') {
+      return undefined;
+    }
+
+    return value.trim();
+  }
+
+  private normalizeApiUrl(apiUrl: string): string {
+    return apiUrl.replace(/\/+$/, '');
   }
 
   private formatAIError(err: any) {

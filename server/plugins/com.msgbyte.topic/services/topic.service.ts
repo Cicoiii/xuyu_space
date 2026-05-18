@@ -3,7 +3,7 @@ import { TcService, TcDbService, TcContext, call } from 'tailchat-server-sdk';
 import type { GroupTopicDocument, GroupTopicModel } from '../models/topic';
 
 /**
- * 群组话题
+ * 社区话题
  */
 interface GroupTopicService
   extends TcService,
@@ -28,7 +28,8 @@ class GroupTopicService extends TcService {
       params: {
         groupId: 'string',
         panelId: 'string',
-        content: 'string',
+        content: { type: 'string', optional: true },
+        images: { type: 'array', items: 'string', optional: true },
         meta: { type: 'object', optional: true },
       },
     });
@@ -37,8 +38,32 @@ class GroupTopicService extends TcService {
         groupId: 'string',
         panelId: 'string',
         topicId: 'string',
-        content: 'string',
+        content: { type: 'string', optional: true },
+        images: { type: 'array', items: 'string', optional: true },
         replyCommentId: { type: 'string', optional: true },
+      },
+    });
+    this.registerAction('toggleTopicUpvote', this.toggleTopicUpvote, {
+      params: {
+        groupId: 'string',
+        panelId: 'string',
+        topicId: 'string',
+      },
+    });
+    this.registerAction('toggleCommentUpvote', this.toggleCommentUpvote, {
+      params: {
+        groupId: 'string',
+        panelId: 'string',
+        topicId: 'string',
+        commentId: 'string',
+      },
+    });
+    this.registerAction('toggleCommentPinned', this.toggleCommentPinned, {
+      params: {
+        groupId: 'string',
+        panelId: 'string',
+        topicId: 'string',
+        commentId: 'string',
       },
     });
     this.registerAction('delete', this.delete, {
@@ -84,11 +109,13 @@ class GroupTopicService extends TcService {
         panelId,
       })
       .limit(size)
-      .skip((page - 1) * 20)
+      .skip((page - 1) * size)
       .sort({ _id: 'desc' })
       .exec();
 
-    const json = await this.transformDocuments(ctx, {}, topic);
+    const json = this.normalizeTopicPayload(
+      await this.transformDocuments(ctx, {}, topic)
+    );
 
     return json;
   }
@@ -100,17 +127,21 @@ class GroupTopicService extends TcService {
     ctx: TcContext<{
       groupId: string;
       panelId: string;
-      content: string;
+      content?: string;
+      images?: string[];
       meta?: object;
     }>
   ) {
-    const { groupId, panelId, content, meta } = ctx.params;
+    const { groupId, panelId, content = '', images = [], meta } = ctx.params;
+    const safeImages = this.normalizeImages(images);
     const userId = ctx.meta.userId;
     const t = ctx.meta.t;
 
     // 鉴权
     const group = await call(ctx).getGroupInfo(groupId);
-    const isMember = group.members.some((member) => member.userId === userId);
+    const isMember = group.members.some(
+      (member) => String(member.userId) === userId
+    );
     if (!isMember) {
       throw new Error(t('不是该群组成员'));
     }
@@ -121,16 +152,24 @@ class GroupTopicService extends TcService {
       throw new Error(t('面板不存在'));
     }
 
+    if (!content.trim() && safeImages.length === 0) {
+      throw new Error(t('话题内容不能为空'));
+    }
+
     const topic = await this.adapter.model.create({
       groupId,
       panelId,
       content,
+      images: safeImages,
       meta,
       author: userId,
-      comment: [],
+      comments: [],
+      upvotes: [],
     });
 
-    const json = await this.transformDocuments(ctx, {}, topic);
+    const json = this.normalizeTopicPayload(
+      await this.transformDocuments(ctx, {}, topic)
+    );
 
     this.roomcastNotify(ctx, panelId, 'create', json);
 
@@ -145,17 +184,28 @@ class GroupTopicService extends TcService {
       groupId: string;
       panelId: string;
       topicId: string;
-      content: string;
+      content?: string;
+      images?: string[];
       replyCommentId?: string;
     }>
   ) {
-    const { groupId, panelId, topicId, content, replyCommentId } = ctx.params;
+    const {
+      groupId,
+      panelId,
+      topicId,
+      content = '',
+      images = [],
+      replyCommentId,
+    } = ctx.params;
+    const safeImages = this.normalizeImages(images);
     const userId = ctx.meta.userId;
     const t = ctx.meta.t;
 
     // 鉴权
     const group = await call(ctx).getGroupInfo(groupId);
-    const isMember = group.members.some((member) => member.userId === userId);
+    const isMember = group.members.some(
+      (member) => String(member.userId) === userId
+    );
     if (!isMember) {
       throw new Error(t('不是该群组成员'));
     }
@@ -166,32 +216,41 @@ class GroupTopicService extends TcService {
       throw new Error(t('面板不存在'));
     }
 
-    const topic = await this.adapter.model.findOneAndUpdate(
-      {
-        _id: topicId,
-        groupId,
-        panelId,
-      },
-      {
-        $push: {
-          comments: {
-            content,
-            author: userId,
-            replyCommentId,
-          },
-        },
-      },
-      { new: true }
+    if (!content.trim() && safeImages.length === 0) {
+      throw new Error(t('评论内容不能为空'));
+    }
+
+    const targetTopic = await this.adapter.model.findOne({
+      _id: topicId,
+      groupId,
+      panelId,
+    });
+
+    if (!targetTopic) {
+      throw new Error(t('话题不存在'));
+    }
+
+    targetTopic.comments.push({
+      content,
+      images: safeImages,
+      author: userId,
+      replyCommentId,
+      upvotes: [],
+      authorLiked: false,
+      pinned: false,
+    } as any);
+    await targetTopic.save();
+
+    const json = this.normalizeTopicPayload(
+      await this.transformDocuments(ctx, {}, targetTopic)
     );
 
-    const json = await this.transformDocuments(ctx, {}, topic);
-
-    this.roomcastNotify(ctx, panelId, 'createComment', json);
+    this.roomcastNotify(ctx, panelId, 'update', json);
 
     // 向所有参与者都添加收件箱消息
     const memberIds = _.uniq([
-      topic.author,
-      ...topic.comments.map((c) => c.author),
+      targetTopic.author,
+      ...targetTopic.comments.map((c) => c.author),
     ]);
 
     await Promise.all(
@@ -204,7 +263,111 @@ class GroupTopicService extends TcService {
       )
     );
 
-    return true;
+    return json;
+  }
+
+  /**
+   * 赞同话题
+   */
+  async toggleTopicUpvote(
+    ctx: TcContext<{
+      groupId: string;
+      panelId: string;
+      topicId: string;
+    }>
+  ) {
+    const topic = await this.getMemberVisibleTopic(ctx);
+    const userId = ctx.meta.userId;
+    const upvotes = (topic.upvotes ?? []).map(String);
+    const hasUpvoted = upvotes.includes(userId);
+
+    topic.upvotes = hasUpvoted
+      ? upvotes.filter((id) => id !== userId)
+      : _.uniq([...upvotes, userId]);
+    await topic.save();
+
+    const json = this.normalizeTopicPayload(
+      await this.transformDocuments(ctx, {}, topic)
+    );
+    this.roomcastNotify(ctx, ctx.params.panelId, 'update', json);
+
+    return json;
+  }
+
+  /**
+   * 赞同评论
+   */
+  async toggleCommentUpvote(
+    ctx: TcContext<{
+      groupId: string;
+      panelId: string;
+      topicId: string;
+      commentId: string;
+    }>
+  ) {
+    const topic = await this.getMemberVisibleTopic(ctx);
+    const userId = ctx.meta.userId;
+    const t = ctx.meta.t;
+    const comment = topic.comments.find((c) => c.id === ctx.params.commentId);
+
+    if (!comment) {
+      throw new Error(t('评论不存在'));
+    }
+
+    const upvotes = (comment.upvotes ?? []).map(String);
+    const hasUpvoted = upvotes.includes(userId);
+    comment.upvotes = hasUpvoted
+      ? upvotes.filter((id) => id !== userId)
+      : _.uniq([...upvotes, userId]);
+
+    if (String(topic.author) === userId) {
+      comment.authorLiked = !hasUpvoted;
+    }
+
+    await topic.save();
+
+    const json = this.normalizeTopicPayload(
+      await this.transformDocuments(ctx, {}, topic)
+    );
+    this.roomcastNotify(ctx, ctx.params.panelId, 'update', json);
+
+    return json;
+  }
+
+  /**
+   * 置顶/取消置顶评论
+   */
+  async toggleCommentPinned(
+    ctx: TcContext<{
+      groupId: string;
+      panelId: string;
+      topicId: string;
+      commentId: string;
+    }>
+  ) {
+    const topic = await this.getMemberVisibleTopic(ctx);
+    const userId = ctx.meta.userId;
+    const t = ctx.meta.t;
+
+    if (String(topic.author) !== userId) {
+      throw new Error(t('仅话题作者可以置顶评论'));
+    }
+
+    const comment = topic.comments.find((c) => c.id === ctx.params.commentId);
+
+    if (!comment) {
+      throw new Error(t('评论不存在'));
+    }
+
+    comment.pinned = !comment.pinned;
+    await topic.save();
+
+    const json = this.normalizeTopicPayload(
+      await this.transformDocuments(ctx, {}, topic)
+    );
+    this.roomcastNotify(ctx, ctx.params.panelId, 'update', json);
+
+    return json;
   }
 
   /**
@@ -223,7 +386,9 @@ class GroupTopicService extends TcService {
 
     // 鉴权
     const group = await call(ctx).getGroupInfo(groupId);
-    const isMember = group.members.some((member) => member.userId === userId);
+    const isMember = group.members.some(
+      (member) => String(member.userId) === userId
+    );
     if (!isMember) {
       throw new Error(t('不是该群组成员'));
     }
@@ -245,6 +410,92 @@ class GroupTopicService extends TcService {
     });
 
     return result.deletedCount > 0;
+  }
+
+  private async getMemberVisibleTopic(
+    ctx: TcContext<{
+      groupId: string;
+      panelId: string;
+      topicId: string;
+    }>
+  ) {
+    const { groupId, panelId, topicId } = ctx.params;
+    const userId = ctx.meta.userId;
+    const t = ctx.meta.t;
+
+    const group = await call(ctx).getGroupInfo(groupId);
+    const isMember = group.members.some((member) => {
+      return String(member.userId) === userId;
+    });
+    if (!isMember) {
+      throw new Error(t('不是该群组成员'));
+    }
+
+    const targetPanel = group.panels.find((p) => p.id === panelId);
+    if (!targetPanel) {
+      throw new Error(t('面板不存在'));
+    }
+
+    const topic = await this.adapter.model.findOne({
+      _id: topicId,
+      groupId,
+      panelId,
+    });
+
+    if (!topic) {
+      throw new Error(t('话题不存在'));
+    }
+
+    return topic;
+  }
+
+  private normalizeImages(images: unknown): string[] {
+    return this.normalizeStringArray(images).slice(0, 9);
+  }
+
+  private normalizeStringArray(value: unknown): string[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return _.uniq(
+      _.flattenDeep(value)
+        .filter((item) => typeof item === 'string')
+        .map((item) => item.trim())
+        .filter(Boolean)
+    );
+  }
+
+  private normalizeTopicPayload<T>(payload: T): T {
+    const normalizeOne = (topic: any) => {
+      if (!topic || typeof topic !== 'object') {
+        return topic;
+      }
+
+      topic.images = this.normalizeImages(topic.images);
+      topic.upvotes = this.normalizeStringArray(topic.upvotes);
+      topic.comments = Array.isArray(topic.comments) ? topic.comments : [];
+
+      topic.comments.forEach((comment) => {
+        if (!comment || typeof comment !== 'object') {
+          return;
+        }
+
+        comment.images = this.normalizeImages(comment.images);
+        comment.upvotes = this.normalizeStringArray(comment.upvotes);
+        comment.authorLiked = Boolean(comment.authorLiked);
+        comment.pinned = Boolean(comment.pinned);
+      });
+
+      return topic;
+    };
+
+    if (Array.isArray(payload)) {
+      payload.forEach(normalizeOne);
+      return payload;
+    }
+
+    return normalizeOne(payload);
   }
 }
 

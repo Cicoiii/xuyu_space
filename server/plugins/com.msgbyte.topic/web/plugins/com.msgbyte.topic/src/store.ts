@@ -25,7 +25,15 @@ export const useTopicStore = create<
     addTopicPanel: (panelId, topicList) => {
       set((state) => {
         if (state.topicMap[panelId]) {
-          state.topicMap[panelId].push(...topicList);
+          const topicMap = new Map(
+            state.topicMap[panelId].map((topic) => [topic._id, topic])
+          );
+
+          topicList.forEach((topic) => {
+            topicMap.set(topic._id, topic);
+          });
+
+          state.topicMap[panelId] = Array.from(topicMap.values());
         } else {
           state.topicMap[panelId] = topicList;
         }
@@ -33,8 +41,18 @@ export const useTopicStore = create<
     },
     addTopicItem: (panelId, topic) => {
       set((state) => {
-        if (state.topicMap[panelId]) {
+        const topicList = state.topicMap[panelId];
+        if (topicList) {
+          const existedIndex = topicList.findIndex((t) => t._id === topic._id);
+
+          if (existedIndex >= 0) {
+            topicList[existedIndex] = topic;
+            return;
+          }
+
           state.topicMap[panelId].unshift(topic);
+        } else {
+          state.topicMap[panelId] = [topic];
         }
       });
     },
@@ -55,7 +73,11 @@ export const useTopicStore = create<
           );
           if (findedTopicIndex >= 0) {
             state.topicMap[panelId][findedTopicIndex] = topic;
+          } else {
+            state.topicMap[panelId].unshift(topic);
           }
+        } else {
+          state.topicMap[panelId] = [topic];
         }
       });
     },

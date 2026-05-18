@@ -1,7 +1,3 @@
-/**
- * Fork from https://github.com/msgbyte/webbox/blob/main/src/main/webviewManager.ts
- */
-
 import { BrowserView, BrowserWindow, ipcMain, Rectangle } from 'electron';
 import os from 'os';
 import log from 'electron-log';

@@ -55,17 +55,17 @@ export default class MenuBuilder {
 
   buildDarwinTemplate(): MenuItemConstructorOptions[] {
     const subMenuAbout: DarwinMenuItemConstructorOptions = {
-      label: 'Tailchat',
+      label: '序语空间',
       submenu: [
         {
-          label: 'About Tailchat',
+          label: '关于序语空间',
           selector: 'orderFrontStandardAboutPanel:',
         },
         { type: 'separator' },
         { label: 'Services', submenu: [] },
         { type: 'separator' },
         {
-          label: 'Hide Tailchat',
+          label: '隐藏序语空间',
           accelerator: 'Command+H',
           selector: 'hide:',
         },
@@ -144,27 +144,27 @@ export default class MenuBuilder {
       label: 'Help',
       submenu: [
         {
-          label: 'Learn More',
+          label: '了解更多',
           click() {
-            shell.openExternal('https://tailchat.msgbyte.com/');
+            shell.openExternal('https://github.com/xuyu-space/xuyu-space');
           },
         },
         {
-          label: 'Documentation',
+          label: '文档',
           click() {
-            shell.openExternal('https://tailchat.msgbyte.com/docs/intro');
+            shell.openExternal('https://github.com/xuyu-space/xuyu-space#readme');
           },
         },
         {
           label: 'Github',
           click() {
-            shell.openExternal('https://github.com/msgbyte/tailchat');
+            shell.openExternal('https://github.com/xuyu-space/xuyu-space');
           },
         },
         {
-          label: 'Search Issues',
+          label: '反馈问题',
           click() {
-            shell.openExternal('https://github.com/msgbyte/tailchat/issues');
+            shell.openExternal('https://github.com/xuyu-space/xuyu-space/issues');
           },
         },
       ],
@@ -221,27 +221,27 @@ export default class MenuBuilder {
         label: 'Help',
         submenu: [
           {
-            label: 'Learn More',
+            label: '了解更多',
             click() {
-              shell.openExternal('https://tailchat.msgbyte.com/');
+              shell.openExternal('https://github.com/xuyu-space/xuyu-space');
             },
           },
           {
-            label: 'Documentation',
+            label: '文档',
             click() {
-              shell.openExternal('https://tailchat.msgbyte.com/docs/intro');
+              shell.openExternal('https://github.com/xuyu-space/xuyu-space#readme');
             },
           },
           {
             label: 'Github',
             click() {
-              shell.openExternal('https://github.com/msgbyte/tailchat');
+              shell.openExternal('https://github.com/xuyu-space/xuyu-space');
             },
           },
           {
-            label: 'Search Issues',
+            label: '反馈问题',
             click() {
-              shell.openExternal('https://github.com/msgbyte/tailchat/issues');
+              shell.openExternal('https://github.com/xuyu-space/xuyu-space/issues');
             },
           },
           {

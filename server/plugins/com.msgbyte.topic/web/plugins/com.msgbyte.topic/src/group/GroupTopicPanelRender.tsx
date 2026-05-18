@@ -8,46 +8,48 @@ import {
 } from '@capital/common';
 import {
   Button,
-  Empty,
-  IconBtn,
-  openModal,
-  closeModal,
   LoadingOnFirst,
 } from '@capital/component';
 import { request } from '../request';
 import { Translate } from '../translate';
-import { TopicCreate } from '../components/modals/TopicCreate';
 import styled from 'styled-components';
 import { useTopicStore } from '../store';
 import type { GroupTopic } from '../types';
+import { TopicComposer } from '../components/TopicComposer';
 
-const Root = styled(LoadingOnFirst)({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  position: 'relative',
-  paddingTop: 10,
-  paddingBottom: 10,
+const Root = styled(LoadingOnFirst)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+  padding: 12px;
+  background: var(--tc-content-background-color);
 
-  '.ant-empty': {
-    paddingTop: 80,
-  },
+  .topic-composer-wrap {
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto 12px;
+  }
 
-  '.list': {
-    height: '100%',
-    overflow: 'auto',
-  },
+  .list {
+    height: 100%;
+    overflow: auto;
+    padding-bottom: 72px;
+  }
 
-  '.create-btn': {
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
+  .topic-feed {
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+  }
 
-    '> .anticon': {
-      fontSize: 24,
-    },
-  },
-});
+  .topic-load-more {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 16px;
+  }
+
+`;
 
 const PAGE_SIZE = 20;
 
@@ -81,6 +83,9 @@ const GroupTopicPanelRender: React.FC = React.memo(() => {
 
       if (Array.isArray(list)) {
         addTopicPanel(panelId, list);
+        if (page === 1) {
+          setHasMore(true);
+        }
         if (list.length !== PAGE_SIZE) {
           // 没有更多了
           setHasMore(false);
@@ -133,7 +138,7 @@ const GroupTopicPanelRender: React.FC = React.memo(() => {
   );
 
   useGlobalSocketEvent(
-    'plugin:com.msgbyte.topic.createComment',
+    'plugin:com.msgbyte.topic.update',
     (topic: GroupTopic) => {
       /**
        * 仅处理当前面板的话题更新
@@ -144,56 +149,48 @@ const GroupTopicPanelRender: React.FC = React.memo(() => {
     }
   );
 
-  const handleCreateTopic = useCallback(() => {
-    const key = openModal(
-      <TopicCreate
-        onCreate={async (text) => {
-          await request.post('create', {
-            groupId,
-            panelId,
-            content: text,
-          });
+  const handleCreateTopic = useCallback(
+    async ({ content, images }: { content: string; images: string[] }) => {
+      const { data: topic } = await request.post('create', {
+        groupId,
+        panelId,
+        content,
+        images,
+      });
 
-          showSuccessToasts();
-          closeModal(key);
-        }}
-      />
-    );
-  }, [panelInfo, fetch]);
+      if (topic) {
+        addTopicItem(panelId, topic);
+      }
+
+      showSuccessToasts();
+    },
+    [groupId, panelId, addTopicItem]
+  );
 
   return (
     <Root spinning={loading}>
-      {Array.isArray(topicList) && topicList.length > 0 ? (
-        <div className="list">
-          {topicList.map((item, i) => (
-            <TopicCard key={i} topic={item} />
-          ))}
+      <div className="topic-composer-wrap">
+        <TopicComposer onCreate={handleCreateTopic} />
+      </div>
 
-          {hasMore ? (
-            <Button type="link" disabled={loading} onClick={handleLoadMore}>
-              {loading ? Translate.loading : Translate.loadMore}
-            </Button>
-          ) : (
-            <Button type="link" disabled={true} onClick={handleLoadMore}>
-              {Translate.noMore}
-            </Button>
-          )}
+      <div className="list">
+        <div className="topic-feed">
+          {Array.isArray(topicList) &&
+            topicList.map((item) => <TopicCard key={item._id} topic={item} />)}
+
+          <div className="topic-load-more">
+            {Array.isArray(topicList) && topicList.length > 0 && hasMore ? (
+              <Button type="link" disabled={loading} onClick={handleLoadMore}>
+                {loading ? Translate.loading : Translate.loadMore}
+              </Button>
+            ) : Array.isArray(topicList) && topicList.length > 0 ? (
+              <Button type="link" disabled={true} onClick={handleLoadMore}>
+                {Translate.noMore}
+              </Button>
+            ) : null}
+          </div>
         </div>
-      ) : (
-        <Empty description={Translate.noTopic}>
-          <Button type="primary" onClick={handleCreateTopic}>
-            {Translate.createBtn}
-          </Button>
-        </Empty>
-      )}
-
-      <IconBtn
-        className="create-btn"
-        size="large"
-        icon="mdi:plus"
-        title={Translate.createBtn}
-        onClick={handleCreateTopic}
-      />
+      </div>
     </Root>
   );
 });

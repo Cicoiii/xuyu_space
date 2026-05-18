@@ -38,7 +38,7 @@ export const UrlMetaRender: React.FC<{
     return null;
   }
 
-  if (meta['title'] === '') {
+  if (meta['title'] === '' && meta['siteName'] === '') {
     // 一般网页没有title(没有有用信息)，则什么都不显示
     return null;
   }

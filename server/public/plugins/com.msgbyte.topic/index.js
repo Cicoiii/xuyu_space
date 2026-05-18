@@ -1,4 +1,4 @@
-definePlugin('@plugins/com.msgbyte.topic', ['@capital/common', '@capital/component', './index-2df3cc0c'], (function (common, component, index) { 'use strict';
+definePlugin('@plugins/com.msgbyte.topic', ['@capital/common', '@capital/component', './index-f8f06e03'], (function (common, component, index) { 'use strict';
 
 
 

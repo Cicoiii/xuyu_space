@@ -34,6 +34,12 @@ class FriendService extends TcService {
         targetId: 'string',
       },
     });
+    this.registerAction('checkMutualFriend', this.checkMutualFriend, {
+      params: {
+        user1: 'string',
+        user2: 'string',
+      },
+    });
     this.registerAction('setFriendNickname', this.setFriendNickname, {
       params: {
         targetId: 'string',
@@ -79,7 +85,8 @@ class FriendService extends TcService {
   }
 
   /**
-   * 移除单项好友关系
+   * 按微信删除联系人逻辑移除好友:
+   * 仅移除当前用户侧的好友关系，同时隐藏当前用户侧的一对一私聊入口。
    */
   async removeFriend(ctx: TcContext<{ friendUserId: string }>) {
     const { friendUserId } = ctx.params;
@@ -89,6 +96,41 @@ class FriendService extends TcService {
       from: userId,
       to: friendUserId,
     });
+
+    const converse = await ctx.call<
+      { _id: string } | null,
+      { memberIds: string[] }
+    >('chat.converse.findDMConverseWithMembers', {
+      memberIds: [userId, friendUserId],
+    });
+    const converseId = converse ? String(converse._id) : null;
+
+    if (converseId) {
+      await ctx.call(
+        'user.dmlist.removeConverse',
+        { converseId },
+        {
+          meta: {
+            userId,
+          },
+        }
+      );
+    }
+
+    await ctx.call('friend.request.removeBetween', {
+      user1: userId,
+      user2: friendUserId,
+    });
+
+    this.unicastNotify(ctx, userId, 'remove', {
+      friendUserId,
+      converseId,
+    });
+
+    return {
+      friendUserId,
+      converseId,
+    };
   }
 
   /**
@@ -104,6 +146,26 @@ class FriendService extends TcService {
     });
 
     return isFriend;
+  }
+
+  /**
+   * 检查双方是否互为好友
+   */
+  async checkMutualFriend(ctx: TcContext<{ user1: string; user2: string }>) {
+    const { user1, user2 } = ctx.params;
+
+    const [user1ToUser2, user2ToUser1] = await Promise.all([
+      this.adapter.model.exists({
+        from: user1,
+        to: user2,
+      }),
+      this.adapter.model.exists({
+        from: user2,
+        to: user1,
+      }),
+    ]);
+
+    return Boolean(user1ToUser2 && user2ToUser1);
   }
 
   /**

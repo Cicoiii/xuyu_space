@@ -8,6 +8,10 @@ import urlRegex from 'url-regex';
 import React from 'react';
 import { UrlMetaPreviewer } from './UrlMetaPreviewer';
 
+function normalizeMatchedUrl(url: string) {
+  return url.replace(/[),.;!?，。；！？]+$/, '');
+}
+
 regMessageExtraParser({
   name: 'com.msgbyte.linkmeta/urlParser',
   render({ content }) {
@@ -16,8 +20,14 @@ regMessageExtraParser({
     ).match(urlRegex());
     if (matched) {
       const urlMatch = matched
-        .filter((m) => !m.includes('['))
-        .filter((m) => !m.startsWith(window.location.origin));
+        .map(normalizeMatchedUrl)
+        .filter((m, index, list) => list.indexOf(m) === index)
+        .filter((m) => !m.startsWith(window.location.origin))
+        .filter((m) => {
+          const text = String(content);
+
+          return !text.includes(`](${m})`);
+        });
 
       if (urlMatch.length > 0 && typeof urlMatch[0] === 'string') {
         return <UrlMetaPreviewer url={urlMatch[0]} />;

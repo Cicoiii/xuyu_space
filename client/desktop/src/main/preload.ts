@@ -9,7 +9,14 @@ export type Channels =
   | 'ipc-example'
   | 'webview-message'
   | 'close'
-  | 'selectServer';
+  | 'selectServer'
+  | '$mount-webview'
+  | '$unmount-webview'
+  | '$update-webview-rect'
+  | '$show-webview'
+  | '$hide-webview'
+  | '$hide-all-webview'
+  | '$clear-all-webview';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {

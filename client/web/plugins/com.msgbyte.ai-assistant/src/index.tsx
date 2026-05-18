@@ -26,6 +26,11 @@ const CodeMarkdownPanelLoadable = Loadable(
   { componentName: `${PLUGIN_ID}:CodeMarkdownPanel` }
 );
 
+const SettingsPanelLoadable = Loadable(
+  () => import('./SettingsPanel'),
+  { componentName: `${PLUGIN_ID}:SettingsPanel` }
+);
+
 regChatInputButton({
   render: () => {
     return (
@@ -47,6 +52,14 @@ regCustomPanel({
   render: () => null,
   renderIcon: AssistantBubbleIcon,
   onClick: () => {},
+});
+
+regCustomPanel({
+  position: 'setting',
+  icon: 'mdi:tune-variant',
+  name: `${PLUGIN_ID}/settings`,
+  label: '小序助手',
+  render: SettingsPanelLoadable,
 });
 
 regChatInputAction({

@@ -300,6 +300,12 @@ interface PluginUserExtraInfo {
   name: string;
   label: string;
   /**
+   * 是否在资料卡中展示空值
+   *
+   * @default false
+   */
+  displayWhenEmpty?: boolean;
+  /**
    * 自定义渲染函数
    * 可选
    */

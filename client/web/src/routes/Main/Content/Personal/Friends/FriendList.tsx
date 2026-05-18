@@ -18,13 +18,14 @@ import {
   useCachedUserInfo,
   useCachedOnlineStatus,
   useFriendNickname,
+  chatActions,
 } from 'tailchat-shared';
 import { closeModal, openModal } from '@/components/Modal';
 import { SetFriendNickname } from '@/components/modals/SetFriendNickname';
 import { Icon, Avatar } from 'tailchat-design';
 import { Virtuoso } from 'react-virtuoso';
 import { Dropdown } from 'antd';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import styles from './Friends.module.less';
 
 /**
@@ -57,9 +58,7 @@ const FriendRow: React.FC<{
             #{userInfo.discriminator}
           </span>
           {isValidStr(friendNickname) && (
-            <span className={styles.friendNickname}>
-              ({friendNickname})
-            </span>
+            <span className={styles.friendNickname}>({friendNickname})</span>
           )}
         </span>
       </div>
@@ -115,6 +114,7 @@ export const FriendList: React.FC<{
   const userInfos = useUserInfoList(friendIds);
   const { searchText, setSearchText, searchResult } = useUserSearch(userInfos);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const disableAddFriend = useGlobalConfigStore(
     (state) => state.disableAddFriend
@@ -142,13 +142,24 @@ export const FriendList: React.FC<{
   const handleRemoveFriend = useEvent(async (targetId: string) => {
     showAlert({
       message: t(
-        '是否要从自己的好友列表中删除对方? 注意:你不会从对方的好友列表消失'
+        '删除后，对方将从你的好友列表中移除，相关私聊入口也会被隐藏。你将不能继续向对方发送消息，需要重新添加好友后才能聊天。'
       ),
       onConfirm: async () => {
         try {
-          await removeFriend(targetId);
+          const res = await removeFriend(targetId);
           showToasts(t('好友删除成功'), 'success');
           dispatch(userActions.removeFriend(targetId));
+          if (res.converseId) {
+            dispatch(
+              chatActions.removeConverse({ converseId: res.converseId })
+            );
+
+            if (
+              location.pathname === `/main/personal/converse/${res.converseId}`
+            ) {
+              navigate('/main/personal/friends', { replace: true });
+            }
+          }
         } catch (err) {
           showErrorToasts(err);
         }

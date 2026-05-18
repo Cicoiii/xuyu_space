@@ -1,0 +1,11 @@
+{
+  "label": "Profile Viewer",
+  "label.zh-CN": "查看主页",
+  "name": "com.msgbyte.profile-viewer",
+  "url": "/plugins/com.msgbyte.profile-viewer/index.js",
+  "version": "0.0.1",
+  "author": "tailchat",
+  "description": "Allow users to view personal profile information by clicking avatars in group chats and direct messages",
+  "description.zh-CN": "允许用户在群聊或私聊中点击头像查看对方设置的个人信息",
+  "requireRestart": false
+}
